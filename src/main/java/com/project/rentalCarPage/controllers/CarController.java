@@ -1,13 +1,11 @@
 package com.project.rentalCarPage.controllers;
 
-import com.project.rentalCarPage.tables.Car;
-import com.project.rentalCarPage.tables.CarRepository;
-import com.project.rentalCarPage.tables.Carmodel;
-import com.project.rentalCarPage.tables.ReservationRepository;
+import com.project.rentalCarPage.tables.JDBCClasses.Car;
+import com.project.rentalCarPage.tables.JDBCClasses.Repositories.CarRepository;
+import com.project.rentalCarPage.tables.JDBCClasses.Repositories.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,8 +31,8 @@ public class CarController {
 
         List<Car> cars=new ArrayList<Car>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime d1= LocalDateTime.parse(pickUpDate,formatter);
-        LocalDateTime d2= LocalDateTime.parse(returnDate,formatter);
+        LocalDateTime d1= LocalDateTime.parse(pickUpDate.replace("_"," "),formatter);
+        LocalDateTime d2= LocalDateTime.parse(returnDate.replace("_"," "),formatter);
         for(Car c:carRepository.findAll()){
             LocalDateTime start=LocalDateTime.parse(reservationRepository.findById(c.getIdreservation()).get().getPickupdate(),formatter);
             LocalDateTime end=LocalDateTime.parse(reservationRepository.findById(c.getIdreservation()).get().getReturndate(),formatter);

@@ -1,21 +1,12 @@
 package com.project.rentalCarPage.controllers;
 
 
-import com.project.rentalCarPage.tables.Car;
-import com.project.rentalCarPage.tables.Client;
-import com.project.rentalCarPage.tables.ClientRepository;
+import com.project.rentalCarPage.tables.JDBCClasses.Client;
+import com.project.rentalCarPage.tables.JDBCClasses.Repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller // This means that this class is a Controller
 @RequestMapping(path="/clients")
@@ -37,7 +28,7 @@ public class ClientController {
     }
     //path = "/thins"
     @GetMapping(value="/index")
-    public  String showView(){
+    public  String showView(Model model){
         /*File f=new File("index.html");
 
         try {
@@ -47,6 +38,7 @@ public class ClientController {
             throw new RuntimeException(e);
 
         }*/
+        model.addAttribute("cosa","Funcionó");
         return "index";
     }
 }

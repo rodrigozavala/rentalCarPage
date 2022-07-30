@@ -1,6 +1,7 @@
-package com.project.rentalCarPage.tables;
+package com.project.rentalCarPage.tables.JDBCClasses.Repositories;
 
+import com.project.rentalCarPage.tables.JDBCClasses.Client;
 import org.springframework.data.repository.CrudRepository;
-import com.project.rentalCarPage.tables.Client;
+
 public interface ClientRepository extends CrudRepository<Client,Integer>{
 }
