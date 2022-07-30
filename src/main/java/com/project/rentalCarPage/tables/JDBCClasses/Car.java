@@ -13,7 +13,6 @@ public class Car {
     @Id
     //@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer idcar;
-
     private Integer idmodel;
     private Integer idclient;
     private Integer Availability;
