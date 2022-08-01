@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chosing cars</title>
+</head>
+<body>
+<nav class="nav-main">
+  <img src="/img/CarLogo.png" alt="A car Logo" class="nav-car">
+  <ul class="nav-menu">
+    <li>
+      <a href="#" >About us</a>
+    </li>
+    <li>
+      <a href="#" >Rent a car</a>
+    </li>
+    <th th:utext="${navInformation}"></th>
+    <!--
+    <li>
+        <a href="#" >Login</a>
+    </li>
+    <li>
+        <a href="#" >Sign Up</a>
+    </li>-->
+  </ul>
+
+</nav>
+<nav>
+  <form method="get" action="CarsBetween">
+    <label for="PickUpDate">PickUp Date:</label>
+    <input type="datetime-local" id="PickUpDate" name="PickUpDate"> <br> <br>
+
+    <label for="ReturnDate">Return Date:</label>
+    <input type="datetime-local" id="ReturnDate" name="ReturnDate"> <br> <br>
+
+    <label for="TypeCar">Type of car:</label>
+    <input type="search" id="TypeCar" name="TypeCar" list="TypesOfCars">
+    <datalist id="TypesOfCars" name="TypesOfCars" >
+      <option value="Cheaper"></option>
+      <option value="Premium"></option>
+      <option value="Compact"></option>
+      <option value="Standard"></option>
+      <option value="4x4"></option>
+    </datalist><br> <br>
+
+    <label for="MaxPricePerDay">Maximum price per day:</label>
+    <input type="number" id="MaxPricePerDay" name="MaxPricePerDay" value="900"><br><br>
+    <button type="submit"><strong>Search</strong></button>
+  </form>
+
+</nav>
+<nav>
+  <th th:utext="${tableInformation}"></th>
+</nav>
+
+</body>
+</html>

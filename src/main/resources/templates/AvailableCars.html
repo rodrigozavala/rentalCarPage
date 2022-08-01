@@ -1,10 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Available Cars</title>
 </head>
 <body>
+<nav class="nav-main">
+    <img src="/img/CarLogo.png" alt="A car Logo" class="nav-car">
+    <ul class="nav-menu">
+
+        <li>
+            <a href="#" >About us</a>
+        </li>
+        <li>
+            <a href="#" >Rent a car</a>
+        </li>
+        <th th:utext="${navInformation}"></th>
+        <!--
+        <li>
+            <a href="#" >Login</a>
+        </li>
+        <li>
+            <a href="#" >Sign Up</a>
+        </li>-->
+    </ul>
+
+</nav>
 
 
 </body>
