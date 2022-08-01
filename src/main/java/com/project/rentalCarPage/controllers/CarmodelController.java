@@ -13,10 +13,7 @@ import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -59,19 +56,19 @@ public class CarmodelController {
         String carType="%Cheaper%";
         Integer maxPrice=10000;
         ArrayList<QueryJoinCarCarmodel> list=query.findByTimeFrameTypeAndPriceAsc(endString,startString,carType,maxPrice);
-        return convertToTable(list);
+        return convertToTable(list,true);
     }
 
-    @GetMapping(value="/paying")
+    @PostMapping(value="/paying")
     public String showSelected(Model model, @RequestParam("selection") Integer selection) {
         // This returns a JSON or XML with the users
-        String table=convertToTable(query.findByIdCar(selection));
+        String table=convertToTable(query.findByIdCar(selection),false);
         model.addAttribute("vehicleInformation",table);
 
         return "paying";
     }
 
-    private String convertToTable(ArrayList<QueryJoinCarCarmodel> list){
+    private String convertToTable(ArrayList<QueryJoinCarCarmodel> list,Boolean isTable){
         //Change later to implement CSS
         String result="<table>";
         //result+="<th></th><th></th><th></th>";
@@ -88,9 +85,11 @@ public class CarmodelController {
             result+=String.format("Automatic transmission:<br> %s</td>\n",(q.getAuttransmission()==1)?"Yes":"No");
             //Need to change this to send the id to
             //result+=String.format("<td><form method=\"get\" action=\"paying/?selection=%d\">",q.getIdcar());
-            result+="<td><form method=\"get\" action=\"paying\">";
-            result+=String.format("<input type=\"hidden\" name=\"selection\" value=%d>", q.getIdcar());
-            result+="<button type=\"submit\"><strong>Chose this <br> car </strong></button></form></td>\n";
+            if(isTable){
+                result+="<td><form method=\"post\" action=\"paying\">";
+                result+=String.format("<input type=\"hidden\" name=\"selection\" value=%d>", q.getIdcar());
+                result+="<button type=\"submit\"><strong>Chose this <br> car </strong></button></form></td>\n";
+            }
             result+="</tr>";
         }
         result+="</table>";
