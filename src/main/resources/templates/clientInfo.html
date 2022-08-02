@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Info</title>
+</head>
+<body>
+<h1>Rental car</h1>
+<div class="container">
+  <nav class="nav-main">
+    <img src="/img/CarLogo.png" alt="A car Logo" class="nav-car">
+    <ul class="nav-menu">
+
+      <li>
+        <a href="http://localhost:8989/index" >About us</a>
+      </li>
+      <li>
+        <a href="http://localhost:8989/pickACar/CarsBetween" >Rent a car</a>
+      </li>
+      <th th:utext="${navInformation}"></th>
+      <!--
+      <li>
+          <a href="#" >Login</a>
+      </li>
+      <li>
+          <a href="#" >Sign Up</a>
+      </li>-->
+    </ul>
+
+  </nav>
+  <hr>
+  <header class="showcase" >
+    <h1>Rent a <strong>car</strong> today</h1><br>
+    <h3>Do you want a ride?</h3>
+  </header>
+</div>
+<div>
+  <th th:utext="${userInfo}"></th>
+</div>
+
+</body>
+</html>

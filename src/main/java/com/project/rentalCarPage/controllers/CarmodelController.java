@@ -2,10 +2,9 @@ package com.project.rentalCarPage.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.rentalCarPage.tables.JDBCClasses.Car;
-import com.project.rentalCarPage.tables.JDBCClasses.Carmodel;
-import com.project.rentalCarPage.tables.JDBCClasses.QueryJoinCarCarmodel;
+import com.project.rentalCarPage.tables.JDBCClasses.*;
 import com.project.rentalCarPage.tables.JDBCClasses.Repositories.CarmodelRepository;
+import com.project.rentalCarPage.tables.JDBCClasses.Repositories.ClientRepository;
 import com.project.rentalCarPage.tables.JDBCClasses.Repositories.QueryJoinCarCarmodelRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -30,6 +32,9 @@ public class CarmodelController {
 
     @Autowired
     private QueryJoinCarCarmodelRepository query;
+
+    //@Autowired
+    //private ClientRepository clientRepository;
 
     /*
     @GetMapping(path="/allCarmodels")
@@ -71,12 +76,16 @@ public class CarmodelController {
         return "paying";
     }
     @GetMapping(value="/CarsBetween")
-    public String selectCars(Model model, @RequestParam(name="PickUpDate", required = false) String pickUpDate,@RequestParam(name="ReturnDate",required = false) String returnDate,@RequestParam(name="MaxPricePerDay",required = false) Integer MaxPrice,@RequestParam(name="TypeCar",required = false) String CarType){
+    public String selectCars(Model model, HttpServletRequest request, HttpServletResponse response, @RequestParam(name="PickUpDate", required = false) String pickUpDate, @RequestParam(name="ReturnDate",required = false) String returnDate, @RequestParam(name="MaxPricePerDay",required = false) Integer MaxPrice, @RequestParam(name="TypeCar",required = false) String CarType){
+        toolsToCustomizeNav.navCustomization(model,request,response);
         if(pickUpDate==null || returnDate==null || CarType==null){
-            model.addAttribute("navInformation", "it works");
+            String message="<h1>Enter the desired date to pick and return the vehicle <br> as well " +
+                    "as the maximum price you want to pay (optional) and the type of car you want (optional)</h1>";
+            model.addAttribute("tableInformation",message);
+
         }else{
 
-            model.addAttribute("navInformation",returnDate+":00"+"/ "+pickUpDate+" / "+MaxPrice+": "+ CarType);
+            //model.addAttribute("navInformation",returnDate+":00"+"/ "+pickUpDate+" / "+MaxPrice+": "+ CarType);
             ArrayList<QueryJoinCarCarmodel> list=query.findByTimeFrameTypeAndPriceAsc(returnDate.replace("T"," ")+":00",pickUpDate.replace("T"," ")+":00","%"+CarType+"%",MaxPrice);
             if(list.size()!=0){
                 String table= convertToTable(list,true);

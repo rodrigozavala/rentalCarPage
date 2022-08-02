@@ -5,14 +5,43 @@
     <title>Login</title>
 </head>
 <body>
-<div>
-  <form method="post" action="index">
-      <label for="PickUpDate">PickUpDate:</label>
-      <input type="datetime-local" id="PickUpDate" name="PickUpDate"> <br> <br>
+<div class="firstDiv">
+  <form method="post" action="clientInfo">
+      <label for="Email">Email:</label>
+      <input type="email" id="Email" name="Email"> <br> <br>
+      <label for="Password">Password:</label>
+      <input type="password" id="Password" name="Password"> <br> <br>
+      <button type="button" onclick="validateAndSend()"><strong>Login</strong></button>
+      <h1 class="WarningMessage" id="WarningMessage" ></h1>
 
-      <label for="ReturnDate">ReturnDate:</label>
-      <input type="datetime-local" id="ReturnDate" name="ReturnDate"> <br> <br>
+      <script>
+          function validateAndSend(){
+            let email=document.getElementById("Email").value;
+            let password=document.getElementById("Password").value;
+            //let email=data.email;
+            //let password=data.password;
+            if(email.length==0 && password.length==0){
+                //document.getElementById("WarningMessage").value="There is no email nor password";
+                alert("There is no email and neither password");
+                console.log("No Email no Password");
+            }else if(email.length==0){
+                alert("There is no email");
+                console.log("No email");
+            }else if(password.length==0){
+                alert("There is no password");
+                console.log("No Password");
+            }else{
+                document.querySelector("div.firstDiv form[method='post']").submit();
+            }
+          }
+          //const btn=document.querySelector("div.firstDiv button[type='button']");
+          //console.log(btn.innerText);
+          //let emailToSend=document.getElementById("Email").value;
+          //let passwordToSend=document.getElementById("Password").value;
+          //btn.addEventListener('click', () => {validateAndSend({email:emailToSend,password:passwordToSend});});
 
+
+      </script>
   </form>
 </div>
 
