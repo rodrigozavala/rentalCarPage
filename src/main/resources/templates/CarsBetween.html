@@ -28,11 +28,9 @@
 <nav>
   <form method="get" action="CarsBetween">
     <label for="PickUpDate">PickUp Date:</label>
-    <input type="datetime-local" id="PickUpDate" name="PickUpDate"> <br> <br>
-
+    <input  type="datetime-local" id="PickUpDate" name="PickUpDate"> <br> <br>
     <label for="ReturnDate">Return Date:</label>
     <input type="datetime-local" id="ReturnDate" name="ReturnDate"> <br> <br>
-
     <label for="TypeCar">Type of car:</label>
     <input type="search" id="TypeCar" name="TypeCar" list="TypesOfCars">
     <datalist id="TypesOfCars" name="TypesOfCars" >
@@ -42,12 +40,20 @@
       <option value="Standard"></option>
       <option value="4x4"></option>
     </datalist><br> <br>
-
     <label for="MaxPricePerDay">Maximum price per day:</label>
-    <input type="number" id="MaxPricePerDay" name="MaxPricePerDay" value="900"><br><br>
+    <input  type="number" id="MaxPricePerDay" name="MaxPricePerDay" value="900"><br><br>
     <button type="submit"><strong>Search</strong></button>
   </form>
-
+  <script>
+  function refill(){
+      //let pD=<th th:text="${PickUpDate}"></th>;
+      //let rD=<th th:text="${ReturnDate}""></th>;
+      //let maxP= <th th:text="${MaxPricePerDay}"></th>;
+      //let  tC=<th th:text="${TypeCar}"></th>;
+      //console.log(pD,rD,maxP,tC);
+    }
+   refill();
+  </script>
 </nav>
 <nav>
   <th th:utext="${tableInformation}"></th>

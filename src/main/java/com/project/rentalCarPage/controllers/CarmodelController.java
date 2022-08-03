@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,46 +34,13 @@ public class CarmodelController {
     @Autowired
     private QueryJoinCarCarmodelRepository query;
 
-    //@Autowired
-    //private ClientRepository clientRepository;
 
-    /*
-    @GetMapping(path="/allCarmodels")
-    public @ResponseBody Iterable<Carmodel> getAllUsers() {
-        // This returns a JSON or XML with the users
-        return carmodelRepository.findAll();
-    }
-    @GetMapping(path="/allCarmodels2")
-    public @ResponseBody Iterable<QueryJoinCarCarmodel> getSomeCarsByPost() {
-        //Change this later to receive parameters and map from post
-        LocalDateTime start=LocalDateTime.of(2022,8,1,11,0,0);
-        LocalDateTime end=LocalDateTime.of(2022,8,21,11,30,0);
-        String endString=end.toString().replace("T", " ");
-        String startString=start.toString().replace("T"," ");
-        String carType="%Cheaper%";
-        Integer maxPrice=10000;
-        ArrayList<QueryJoinCarCarmodel> list=query.findByTimeFrameTypeAndPriceAsc(endString,startString,carType,maxPrice);
-        return (Iterable<QueryJoinCarCarmodel>) list;
-
-    }
-    @GetMapping(path="/allCarmodels3")
-    public @ResponseBody String getSomeCars(){
-        LocalDateTime start=LocalDateTime.of(2022,8,1,11,0,0);
-        LocalDateTime end=LocalDateTime.of(2022,8,21,11,30,0);
-        String endString=end.toString().replace("T", " ");
-        String startString=start.toString().replace("T"," ");
-        String carType="%Cheaper%";
-        Integer maxPrice=10000;
-        ArrayList<QueryJoinCarCarmodel> list=query.findByTimeFrameTypeAndPriceAsc(endString,startString,carType,maxPrice);
-        return convertToTable(list,true);
-    }*/
 
     @PostMapping(value="/paying")
-    public String showSelected(Model model, @RequestParam("selection") Integer selection) {
-        // This returns a JSON or XML with the users
+    public String showSelected(Model model,HttpServletResponse response,HttpServletRequest request, @RequestParam("selection") Integer selection) {
         String table=convertToTable(query.findByIdCar(selection),false);
         model.addAttribute("vehicleInformation",table);
-
+        response.addCookie(new Cookie(toolsToCustomizeNav.COOKIE_CARDATA,request.getParameter("selection")));
         return "paying";
     }
     @GetMapping(value="/CarsBetween")
@@ -85,7 +53,7 @@ public class CarmodelController {
 
         }else{
 
-            //model.addAttribute("navInformation",returnDate+":00"+"/ "+pickUpDate+" / "+MaxPrice+": "+ CarType);
+            response.addCookie(toolsToCustomizeNav.addDatesCookie(request));
             ArrayList<QueryJoinCarCarmodel> list=query.findByTimeFrameTypeAndPriceAsc(returnDate.replace("T"," ")+":00",pickUpDate.replace("T"," ")+":00","%"+CarType+"%",MaxPrice);
             if(list.size()!=0){
                 String table= convertToTable(list,true);
@@ -102,8 +70,6 @@ public class CarmodelController {
     private String convertToTable(ArrayList<QueryJoinCarCarmodel> list,Boolean isTable){
         //Change later to implement CSS
         String result="<table>";
-        //result+="<th></th><th></th><th></th>";
-        //result+="<th></th><th></th><th></th>";
         for(QueryJoinCarCarmodel q: list){
             result+="<tr>";
             result+=String.format("<td><img src=\"%s\" width=%d height=%d> <br>\n",q.getImagepath(),100,100);//1

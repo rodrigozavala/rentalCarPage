@@ -98,9 +98,32 @@ public class ClientController {
     public  String showLoginView(Model model,HttpServletResponse response,HttpServletRequest request){
         toolsToCustomizeNav.navCustomization(model,request,response);
 
+
         //model.addAttribute("cosa","Funcionó");
         return "login";
     }
+
+    @GetMapping(value="/logout")
+    public  String showLogoutView(Model model,HttpServletResponse response,HttpServletRequest request){
+        toolsToCustomizeNav.navCustomization(model,request,response);
+        Cookie endSession=new Cookie(toolsToCustomizeNav.COOKIE_SESSION,"null");
+        Cookie userNameCookie=null;
+        if(request.getCookies()!=null){
+            for(Cookie c: request.getCookies()){
+                if(c.getName().equals(toolsToCustomizeNav.COOKIE_USER_NAME)){
+                    userNameCookie=c;
+                    userNameCookie.setValue("");
+                    userNameCookie.setMaxAge(1);
+                    response.addCookie(userNameCookie);
+                    break;
+                }
+            }
+        }
+        response.addCookie(endSession);
+
+        return "logout";
+    }
+
 
     private void showUserInfo(Model model,ArrayList<Client> list,HttpServletRequest request){
         String message="<h1>User Info</h1>";
