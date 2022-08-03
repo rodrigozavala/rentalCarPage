@@ -132,7 +132,6 @@ public class ClientController {
         message+=String.format("<h3>Email: %s</h3><br>",list.get(0).getEmail());
         message+=String.format("<h3>Phone: %s</h3><br>",list.get(0).getPhone());
         message+=String.format("<h3>Age: %s</h3><br>",list.get(0).getAge());
-
         /*
         Cookie carData=Arrays.stream(request.getCookies()).
                 filter(c->c.getName().equals(toolsToCustomizeNav.COOKIE_CARDATA)).

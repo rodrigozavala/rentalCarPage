@@ -35,12 +35,62 @@ public class CarmodelController {
     private QueryJoinCarCarmodelRepository query;
 
 
-
     @PostMapping(value="/paying")
     public String showSelected(Model model,HttpServletResponse response,HttpServletRequest request, @RequestParam("selection") Integer selection) {
         String table=convertToTable(query.findByIdCar(selection),false);
         model.addAttribute("vehicleInformation",table);
         response.addCookie(new Cookie(toolsToCustomizeNav.COOKIE_CARDATA,request.getParameter("selection")));
+        toolsToCustomizeNav.navCustomization(model,request,response);
+        Cookie sessionCookie;
+        if(request.getCookies()!=null){
+            for(Cookie c:request.getCookies()){
+                if(c.getName().equals(toolsToCustomizeNav.COOKIE_SESSION)){
+                    sessionCookie=c;
+                    if(sessionCookie.getValue().equals("null")==false){//there is an user
+                        String businessMessage="<div>" +
+                                "<h1>Please introduce your <br> credit car information:</h1>"+
+                                "<form>"+
+                                "</form>"+
+                                "</div>";
+                        model.addAttribute("businessInformation",businessMessage);
+                    }else{//the is no user, we must encourage to login
+                        String login="<div class=\"firstDiv\">\n" +
+                                "<h1>Please, login so we can book your reservation</h1>"+
+                                "  <form method=\"post\" action=\"http://localhost:8989/clientInfo\">\n" +
+                                "      <label for=\"Email\">Email:</label>\n" +
+                                "      <input type=\"email\" id=\"Email\" name=\"Email\"> <br> <br>\n" +
+                                "      <label for=\"Password\">Password:</label>\n" +
+                                "      <input type=\"password\" id=\"Password\" name=\"Password\"> <br> <br>\n" +
+                                "      <button type=\"button\" onclick=\"validateAndSend()\"><strong>Login</strong></button>\n" +
+                                "      <h1 class=\"WarningMessage\" id=\"WarningMessage\" ></h1>\n" +
+                                "      <script>\n" +
+                                "          function validateAndSend(){\n" +
+                                "            let email=document.getElementById(\"Email\").value;\n" +
+                                "            let password=document.getElementById(\"Password\").value;\n" +
+                                "            if(email.length==0 && password.length==0){\n" +
+                                "                alert(\"There is no email and neither password\");\n" +
+                                "                console.log(\"No Email no Password\");\n" +
+                                "            }else if(email.length==0){\n" +
+                                "                alert(\"There is no email\");\n" +
+                                "                console.log(\"No email\");\n" +
+                                "            }else if(password.length==0){\n" +
+                                "                alert(\"There is no password\");\n" +
+                                "                console.log(\"No Password\");\n" +
+                                "            }else{\n" +
+                                "                document.querySelector(\"div.firstDiv form[method='post']\").submit();\n" +
+                                "            }\n" +
+                                "          }\n" +
+                                "      </script>\n" +
+                                "  </form>\n" +
+                                "</div>";
+                        model.addAttribute("businessInformation",login);
+
+                    }
+                    break;
+                }
+            }
+
+        }
         return "paying";
     }
     @GetMapping(value="/CarsBetween")
