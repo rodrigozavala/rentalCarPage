@@ -2,48 +2,65 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link href="webjars/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="webjars/jquery/1.12.4/jquery.min.js"></script>
+    <script src="webjars/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-<div class="firstDiv">
-  <form method="post" action="clientInfo">
-      <label for="Email">Email:</label>
-      <input type="email" id="Email" name="Email"> <br> <br>
-      <label for="Password">Password:</label>
-      <input type="password" id="Password" name="Password"> <br> <br>
-      <button type="button" onclick="validateAndSend()"><strong>Login</strong></button>
-      <h1 class="WarningMessage" id="WarningMessage" ></h1>
+<div class="container">
+    <div  style="margin-left: 5%; margin-right: 70%;">
+      <form class="form-login" method="post" action="clientInfo">
+          <h3>Please login to your account</h3>
+          <div>
+              <label for="Email">Email:</label>
+              <input class="form-control" type="email" id="Email" name="Email"> <br> <br>
 
-      <script>
-          function validateAndSend(){
-            let email=document.getElementById("Email").value;
-            let password=document.getElementById("Password").value;
-            //let email=data.email;
-            //let password=data.password;
-            if(email.length==0 && password.length==0){
-                //document.getElementById("WarningMessage").value="There is no email nor password";
-                alert("There is no email and neither password");
-                console.log("No Email no Password");
-            }else if(email.length==0){
-                alert("There is no email");
-                console.log("No email");
-            }else if(password.length==0){
-                alert("There is no password");
-                console.log("No Password");
-            }else{
-                document.querySelector("div.firstDiv form[method='post']").submit();
-            }
-          }
-          //const btn=document.querySelector("div.firstDiv button[type='button']");
-          //console.log(btn.innerText);
-          //let emailToSend=document.getElementById("Email").value;
-          //let passwordToSend=document.getElementById("Password").value;
-          //btn.addEventListener('click', () => {validateAndSend({email:emailToSend,password:passwordToSend});});
+          </div>
 
+          <div >
+              <label for="Password">Password:</label>
+              <input class="form-control" type="password" id="Password" name="Password"> <br> <br>
+          </div>
+          <div>
+              <a href="#">I don't have an account</a> <br>
+              <a href="/index">Go back to the beginning</a>
+          </div>
 
-      </script>
-  </form>
+          <button type="button" onclick="validateAndSend()"><strong>Login</strong></button>
+          <h1 class="WarningMessage" id="WarningMessage" ></h1>
+
+          <script>
+              function validateAndSend(){
+                let email=document.getElementById("Email").value;
+                let password=document.getElementById("Password").value;
+                //let email=data.email;
+                //let password=data.password;
+                if(email.length==0 && password.length==0){
+                    //document.getElementById("WarningMessage").value="There is no email nor password";
+                    alert("There is no email and neither password");
+                    console.log("No Email no Password");
+                }else if(email.length==0){
+                    alert("There is no email");
+                    console.log("No email");
+                }else if(password.length==0){
+                    alert("There is no password");
+                    console.log("No Password");
+                }else{
+                    document.querySelector("div.container div form[method='post']").submit();
+                }
+              }
+              //const btn=document.querySelector("div.firstDiv button[type='button']");
+              //console.log(btn.innerText);
+              //let emailToSend=document.getElementById("Email").value;
+              //let passwordToSend=document.getElementById("Password").value;
+              //btn.addEventListener('click', () => {validateAndSend({email:emailToSend,password:passwordToSend});});
+
+          </script>
+      </form>
+    </div>
 </div>
-
 </body>
 </html>

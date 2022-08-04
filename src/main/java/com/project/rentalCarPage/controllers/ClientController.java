@@ -55,7 +55,7 @@ public class ClientController {
             if(myCookie==null){//(COOKIES)(NOT CONNECTED)(FIRST TIME)this is the first time we enter the site
                 toolsToCustomizeNav.navCustomization(model,request,response);
                 noUser(model);
-                return "/clientInfo";
+                return "clientInfo";
             }
 
             if(myCookie.getValue().equals("null")){//(COOKIES)(NOT CONNECTED)Not connected to the user email
@@ -85,7 +85,7 @@ public class ClientController {
             toolsToCustomizeNav.navCustomization(model,request,response);
         }
 
-        return "/clientInfo";
+        return "clientInfo";
     }
     @GetMapping(value="/index")
     public  String showMainView(Model model,HttpServletResponse response,HttpServletRequest request){

@@ -65,15 +65,19 @@ public class toolsToCustomizeNav {
         response.addCookie(cookie);
     }
     public static  void updateNavWithUserData(Model model,Cookie userName){
-        String userInfo0=String.format("<li><div class=\"dropdown\">\n" +
-                "  <button class=\"btn btn-secondary dropdown-toggle\" type=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">\n" +
+        String userInfo0=String.format("<li ><div class=\"dropdown\">\n" +
+                "  <button class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
                 "    %s\n" +
                 "  </button>\n" +
                 "  <ul class=\"dropdown-menu\">\n" +
-                "    <li><a class=\"dropdown-item\" href=\"/clientInfo\">Check UserInfo</a></li>\n" +
+                "    <li>" +
+                "    <form class=\"dropdown-item\" method=\"post\" action=\"/clientInfo\">\n" +
+                "    <input type=\"hidden\" name=\"name\" value=\"value\" /> \n" +
+                "    <a onclick=\"this.parentNode.submit();\">Check User Info</a>\n" +
+                "   </form> </li>\n" +
                 "    <li><a class=\"dropdown-item\" href=\"/logout\">logout</a></li>\n" +
                 "  </ul>\n" +
-                "</div></li>",userName.getValue());
+                "</div></li><br><br>",userName.getValue());
 
         String userInfo=String.format("<li> " +
                 "<a href=#>%s</a>" +

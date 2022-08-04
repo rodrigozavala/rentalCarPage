@@ -1,21 +1,26 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>User Info</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Info</title>
+  <link href="webjars/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+  <script src="webjars/jquery/1.12.4/jquery.min.js"></script>
+  <script src="webjars/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
 <h1>Rental car</h1>
 <div class="container">
-  <nav class="nav-main">
+  <nav class="nav-main" style="display: inline;">
     <img src="/img/CarLogo.png" alt="A car Logo" class="nav-car">
-    <ul class="nav-menu">
+    <ul class="nav nav-tabs">
 
       <li>
         <a href="http://localhost:8989/index" >About us</a>
       </li>
       <li>
-        <a href="http://localhost:8989/pickACar/CarsBetween" >Rent a car</a>
+        <a href="http://localhost:8989/CarsBetween" >Rent a car</a>
       </li>
       <th th:utext="${navInformation}"></th>
       <!--
@@ -33,10 +38,11 @@
     <h1>Rent a <strong>car</strong> today</h1><br>
     <h3>Do you want a ride?</h3>
   </header>
+  <div>
+    <th th:utext="${userInfo}"></th>
+  </div>
 </div>
-<div>
-  <th th:utext="${userInfo}"></th>
-</div>
+
 
 </body>
 </html>
