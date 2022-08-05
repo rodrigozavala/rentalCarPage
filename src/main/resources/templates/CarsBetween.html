@@ -61,6 +61,13 @@
 
         <label for="MaxPricePerDay">Maximum price per day:</label>
         <input  type="number" id="MaxPricePerDay" name="MaxPricePerDay" value="900"><br><br>
+
+        <p>Order by price:</p>
+        <label for="radioAsc">Asc Search</label>
+        <input type="radio" id="radioAsc" name="order" value="ASC"> <br>
+        <label for="radioDesc">Desc Search</label>
+        <input type="radio" id="radioDesc" name="order" value="DESC"><br>
+
         <button type="button" onclick="validateAndSend()"><strong>Search</strong></button>
       </form>
       <script>
@@ -89,6 +96,7 @@
                     }
                     showAndHide();
                     showAndHidePrice();
+                    document.getElementById("radioAsc").checked=true;
 
                     function fillDate(dateString){
                         let myDate=new Date();

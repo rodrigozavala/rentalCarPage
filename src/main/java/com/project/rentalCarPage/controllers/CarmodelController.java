@@ -20,10 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Controller // This means that this class is a Controller
 @RequestMapping(path="/")
@@ -41,14 +38,14 @@ public class CarmodelController {
         //HERE WE SHOW THE SELECTED CAR
         if(request.getParameter("selection")!=null){//if we come from carsBetween
             response.addCookie(new Cookie(toolsToCustomizeNav.COOKIE_CARDATA,request.getParameter("selection")));
-            String table=convertToTable(query.findByIdCar(selection),false);
+            String table=convertToTable(query.findByIdCar(selection),false,request);
             model.addAttribute("vehicleInformation",table);
         }else{//we don't come from carsBetween, maybe we come from clientInfo, there we should show a message
             //explaining there is still a reservation to do
             if(request.getCookies()!=null){//we take the cookies
                 for(Cookie c:request.getCookies()){
                     if(c.getName().equals(toolsToCustomizeNav.COOKIE_CARDATA)){
-                        String table=convertToTable(query.findByIdCar(Integer.valueOf(c.getValue())),false);
+                        String table=convertToTable(query.findByIdCar(Integer.valueOf(c.getValue())),false,request);
                         model.addAttribute("vehicleInformation",table);
                     }
                     break;
@@ -68,27 +65,14 @@ public class CarmodelController {
                 if(c.getName().equals(toolsToCustomizeNav.COOKIE_SESSION)){
                     sessionCookie=c;
                     if(sessionCookie.getValue().equals("null")==false){//there is an user
-                        /*String businessMessage="<div>" +
-                                "<h1>Please introduce your <br> credit car information:</h1>"+
-                                "<form method=\"post\" action=\"successfull_operation\">\n"+
-                                "<label for=\"Email\">Email:</label>\n"+
-                                "<input type=\"hidden\" id=\"Nothing\" name=\"Nothing\" value=\"200\">\n" +
-                                "<label for=\"Email\">Email:</label>\n"+
-                                "<input type=\"hidden\" id=\"Nothing\" name=\"Nothing\" value=\"200\">\n" +
-                                "<label for=\"Email\">Email:</label>\n"+
-                                "<input type=\"hidden\" id=\"Nothing\" name=\"Nothing\" value=\"200\">\n" +
-                                "<label for=\"Email\">Email:</label>\n"+
-                                "<input type=\"hidden\" id=\"Nothing\" name=\"Nothing\" value=\"200\">\n" +
-                                "</form>"+
-                                "</div>";
-                        model.addAttribute("businessInformation",businessMessage);*/
+
                         showCreditCardForm(model);
                     }else{//the is no user, we must encourage to login
                         String login="<div class=\"firstDiv\">\n" +
                                 "<h1>Please, login so we can book your reservation</h1>"+
                                 "  <form method=\"get\" action=\"http://localhost:8989/login\">\n" +
                                 "      <input type=\"hidden\" id=\"Nothing\" name=\"Nothing\" value=\"200\">\n" +
-                                "      <button type=\"button\" onclick=\"validateAndSend()\"><strong>Go to Login</strong></button>\n" +
+                                "      <button type=\"submit\"><strong>Go to Login</strong></button>\n" +
                                 "  </form>\n" +
                                 "</div>";
                         model.addAttribute("businessInformation",login);
@@ -102,7 +86,7 @@ public class CarmodelController {
         return "paying";
     }
     @GetMapping(value="/CarsBetween")
-    public String selectCars(Model model, HttpServletRequest request, HttpServletResponse response, @RequestParam(name="PickUpDate", required = false) String pickUpDate, @RequestParam(name="ReturnDate",required = false) String returnDate, @RequestParam(name="MaxPricePerDay",required = false) Integer MaxPrice, @RequestParam(name="TypeCar",required = false) String CarType){
+    public String selectCars(Model model, HttpServletRequest request, HttpServletResponse response, @RequestParam(name="PickUpDate", required = false) String pickUpDate, @RequestParam(name="ReturnDate",required = false) String returnDate, @RequestParam(name="MaxPricePerDay",required = false) Integer MaxPrice, @RequestParam(name="TypeCar",required = false) String CarType, @RequestParam(name="order",required = false) String order){
         toolsToCustomizeNav.navCustomization(model,request,response);
         if(pickUpDate==null || returnDate==null || CarType==null){
             String message="<h4>Enter the desired date to pick and return the vehicle <br> as well " +
@@ -112,9 +96,14 @@ public class CarmodelController {
         }else{
 
             response.addCookie(toolsToCustomizeNav.addDatesCookie(request));
-            ArrayList<QueryJoinCarCarmodel> list=query.findByTimeFrameTypeAndPriceAsc(returnDate.replace("T"," ")+":00",pickUpDate.replace("T"," ")+":00","%"+CarType+"%",MaxPrice);
+            ArrayList<QueryJoinCarCarmodel> list=new ArrayList<QueryJoinCarCarmodel>();
+            if(order.equals("ASC")){
+                 list=query.findByTimeFrameTypeAndPriceAsc(returnDate.replace("T"," ")+":00",pickUpDate.replace("T"," ")+":00","%"+CarType+"%",MaxPrice);
+            }else{
+                 list=query.findByTimeFrameTypeAndPriceDesc(returnDate.replace("T"," ")+":00",pickUpDate.replace("T"," ")+":00","%"+CarType+"%",MaxPrice);
+            }
             if(list.size()!=0){
-                String table= convertToTable(list,true);
+                String table= convertToTable(list,true,request);
                 model.addAttribute("tableInformation",table);
             }else{
                 String message=String.format("<h4>There are %d cars with this characteristics, <br> please chose again</h4>",list.size());
@@ -125,9 +114,37 @@ public class CarmodelController {
         return "CarsBetween";
     }
 
-    private String convertToTable(ArrayList<QueryJoinCarCarmodel> list,Boolean isTable){
+    private String convertToTable(ArrayList<QueryJoinCarCarmodel> list,Boolean isTable,HttpServletRequest request){
         //Change later to implement CSS
-        String result="<table class=\"table table-striped table-hover\">";
+        String result="";
+        //String result=String.format("<h3> %s %s</h3>",request.getRequestURL(),request.getPathInfo());
+        if(request.getRequestURL().toString().contains("CarsBetween") && request.getParameter("PickUpDate")!=null){
+            DateTimeFormatter formatter= DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            LocalDateTime pDate=LocalDateTime.parse(request.getParameter("PickUpDate").replace("T"," "),formatter);//@RequestParam(name=, required = false) String pickUpDate, @RequestParam(name=,required = false) String returnDate, @RequestParam(name="MaxPricePerDay",required = false) Integer MaxPrice, @RequestParam(name=,required = false) String CarType, @RequestParam(name="order",required = false) String order)
+            LocalDateTime rDate=LocalDateTime.parse(request.getParameter("ReturnDate").replace("T"," "),formatter);
+            String carType=request.getParameter("TypeCar");
+            result+=String.format("<h3>PickUp Date: %s <br> Return Date: %s <br>",pDate.toString().replace("T"," "),rDate.toString().replace("T"," "));
+            result+=String.format("Car Type: %s </h3><br>",(carType.length()==0)?"Not specified":carType);
+
+        }else if(request.getRequestURL().toString().contains("paying") && request.getCookies()!=null){
+            System.out.println("##############################!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            Cookie sessionCookie=null;
+            Cookie carDataCookie=null;
+            Cookie dateCookie=null;
+            for(Cookie c: request.getCookies()){
+                if(c.getName().equals(toolsToCustomizeNav.COOKIE_SESSION)){
+                    sessionCookie=c;
+                }else if(c.getName().equals(toolsToCustomizeNav.COOKIE_CARDATA)){
+                    carDataCookie=c;
+                }else if(c.getName().equals(toolsToCustomizeNav.COOKIE_DATES)){
+                    dateCookie=c;
+                }
+            }
+
+
+        }
+
+        result+="<table class=\"table table-striped table-hover\">";
         for(QueryJoinCarCarmodel q: list){
             result+="<tr>";
             result+=String.format("<td><img src=\"%s\" width=%d height=%d> <br>\n",q.getImagepath(),100,100);//1
