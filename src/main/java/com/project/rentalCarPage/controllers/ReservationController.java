@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,6 +21,11 @@ public class ReservationController {
     @PostMapping(value="/successfull_operation")
     public String showSuccessfullReservation(Model model, HttpServletRequest request, HttpServletResponse response){
         toolsToCustomizeNav.navCustomization(model,request,response);
+        Cookie carData=new Cookie(toolsToCustomizeNav.COOKIE_CARDATA,"-1");
+        Cookie dateData=new Cookie(toolsToCustomizeNav.COOKIE_DATES,"-1");
+        carData.setMaxAge(1);
+        response.addCookie(carData);
+        response.addCookie(dateData);
         return "successfull_operation";
     }
 }

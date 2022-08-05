@@ -142,7 +142,21 @@ public class ClientController {
 
         }*/
         message+="<br><form method=\"get\" action=\"changeData\"><button type=\"submit\">Change User data</button></form>";
+        if(request.getCookies()!=null){
+            for(Cookie c: request.getCookies()){
+                if(c.getName().equals(toolsToCustomizeNav.COOKIE_CARDATA)){
+                    message+="<div>\n" +
+                            "                <form method=\"post\" action=\"paying\">\n" +
+                            "                    <p>You have a reservation to do</p>\n" +
+                            String.format("                    <input type=\"hidden\" id=\"selection\" name=\"selection\" value=\"%s\">\n",c.getValue()) +
+                            "                    <button type=\"submit\">Check reservation</button>\n" +
+                            "                </form>\n" +
+                            "            </div>";
+                }
+            }
+        }
         model.addAttribute("userInfo",message);
+
     }
 
     private  void noUser(Model model){

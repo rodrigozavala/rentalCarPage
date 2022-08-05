@@ -3,6 +3,7 @@ package com.project.rentalCarPage.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.rentalCarPage.tables.JDBCClasses.*;
+import com.project.rentalCarPage.tables.JDBCClasses.Repositories.CarRepository;
 import com.project.rentalCarPage.tables.JDBCClasses.Repositories.CarmodelRepository;
 import com.project.rentalCarPage.tables.JDBCClasses.Repositories.ClientRepository;
 import com.project.rentalCarPage.tables.JDBCClasses.Repositories.QueryJoinCarCarmodelRepository;
@@ -20,7 +21,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller // This means that this class is a Controller
 @RequestMapping(path="/")
@@ -31,6 +34,8 @@ public class CarmodelController {
     @Autowired
     private QueryJoinCarCarmodelRepository query;
 
+    @Autowired
+    private CarRepository carRepository;
 
     @PostMapping(value="/paying")
     public String showSelected(Model model,HttpServletResponse response,HttpServletRequest request, @RequestParam(value = "selection",required = false) Integer selection) {
@@ -139,6 +144,21 @@ public class CarmodelController {
                 }else if(c.getName().equals(toolsToCustomizeNav.COOKIE_DATES)){
                     dateCookie=c;
                 }
+            }
+            if(carDataCookie!=null && dateCookie!=null){
+                DateTimeFormatter formatter= DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                Car selectedCar=carRepository.findById(Integer.valueOf(carDataCookie.getValue())).get();
+                //String[] dates=dateCookie.getValue().split("TTT");
+                ArrayList<String> dateList=(ArrayList<String>)Arrays.stream(dateCookie.getValue().split("TTT")).
+                        map(s->s.replace("T"," ")).
+                        collect(Collectors.toList());
+                LocalDateTime pDate=LocalDateTime.parse(dateList.get(0),formatter);
+                LocalDateTime rDate=LocalDateTime.parse(dateList.get(1),formatter);
+                long days=ChronoUnit.DAYS.between(pDate,rDate);
+                String totalAmount= String.valueOf(selectedCar.getPriceperday()*days);
+                result+=String.format("<h3>PickUp Date: %s <br> Return Date: %s <br>",pDate.toString().replace("T"," "),rDate.toString().replace("T"," "));
+                result+=String.format("Total Amount:$ %s PricePerDay: $ %d </h3><br>",totalAmount,selectedCar.getPriceperday());
+
             }
 
 
