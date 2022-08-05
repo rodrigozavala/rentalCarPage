@@ -45,12 +45,16 @@
         <h1>Rent a <strong>car</strong> today</h1><br>
         <h3>Do you want a ride?</h3>
     </header>
+
+    <div>
+        <th th:utext="${vehicleInformation}"></th>
+    </div>
+    <div class="businessInfo">
+        <th th:utext="${businessInformation}"></th>
+    </div>
+
+
 </div>
-<div>
-    <th th:utext="${vehicleInformation}"></th>
-</div>
-<div>
-    <th th:utext="${businessInformation}"></th>
-</div>>
+
 </body>
 </html>

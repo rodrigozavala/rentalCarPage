@@ -68,12 +68,21 @@ public class CarmodelController {
                 if(c.getName().equals(toolsToCustomizeNav.COOKIE_SESSION)){
                     sessionCookie=c;
                     if(sessionCookie.getValue().equals("null")==false){//there is an user
-                        String businessMessage="<div>" +
+                        /*String businessMessage="<div>" +
                                 "<h1>Please introduce your <br> credit car information:</h1>"+
-                                "<form method=\"post\" action=\"\">"+
+                                "<form method=\"post\" action=\"successfull_operation\">\n"+
+                                "<label for=\"Email\">Email:</label>\n"+
+                                "<input type=\"hidden\" id=\"Nothing\" name=\"Nothing\" value=\"200\">\n" +
+                                "<label for=\"Email\">Email:</label>\n"+
+                                "<input type=\"hidden\" id=\"Nothing\" name=\"Nothing\" value=\"200\">\n" +
+                                "<label for=\"Email\">Email:</label>\n"+
+                                "<input type=\"hidden\" id=\"Nothing\" name=\"Nothing\" value=\"200\">\n" +
+                                "<label for=\"Email\">Email:</label>\n"+
+                                "<input type=\"hidden\" id=\"Nothing\" name=\"Nothing\" value=\"200\">\n" +
                                 "</form>"+
                                 "</div>";
-                        model.addAttribute("businessInformation",businessMessage);
+                        model.addAttribute("businessInformation",businessMessage);*/
+                        showCreditCardForm(model);
                     }else{//the is no user, we must encourage to login
                         String login="<div class=\"firstDiv\">\n" +
                                 "<h1>Please, login so we can book your reservation</h1>"+
@@ -140,6 +149,93 @@ public class CarmodelController {
         }
         result+="</table>";
         return result;
+    }
+
+    private void showCreditCardForm(Model model){
+        String information="<h2>Please introduce your <br> credit car information:</h2>\n" +
+                "                <form class=\"form-group\" method=\"post\" action=\"successfull_operation\">\n" +
+                "                    <p>Chose a credit card type:</p>\n" +
+                "                    \n" +
+                "                    <input type=\"radio\" id=\"VISA\" name=\"CreditCard\" value=\"VISA\">\n" +
+                "                    <label for=\"VISA\">VISA</label><br>\n" +
+                "\n" +
+                "                    <input type=\"radio\" id=\"MASTERCARD\" name=\"CreditCard\" value=\"MASTERCARD\">\n" +
+                "                    <label for=\"MASTERCARD\">Mastercard</label><br>\n" +
+                "\n" +
+                "                    <input type=\"radio\" id=\"AMERICAN_EXPRESS\" name=\"CreditCard\" value=\"AMERICAN_EXPRESS\">\n" +
+                "                    <label for=\"AMERICAN_EXPRESS\">American Express</label><br>\n" +
+                "\n" +
+                "                    <input type=\"radio\" id=\"DISCOVER\" name=\"CreditCard\" value=\"DISCOVER\">\n" +
+                "                    <label for=\"DISCOVER\">Discover</label><br>\n" +
+                "\n" +
+                "                    <input type=\"radio\" id=\"OTHER\" name=\"CreditCard\" value=\"OTHER\">\n" +
+                "                    <label for=\"OTHER\">Other:</label>\n" +
+                "                    <input type=\"text\" id=\"OTHERValue\" name=\"CreditCardOtherValue\"><br><br>\n" +
+                "                    \n" +
+                "                    <label for=\"CARD_NUMBER\">Card Number</label>\n" +
+                "                    <input type=\"number\" id=\"CARD_NUMBER\"> <br>\n" +
+                "\n" +
+                "                    <label for=\"Exp_Date\">Expiration date</label>\n" +
+                "                    <input type=\"date\" id=\"Exp_Date\" name=\"Exp_Date\"> <br>\n" +
+                "\n" +
+                "                    <label for=\"SecurityCode\">Security Code:</label>\n" +
+                "                    <input type=\"number\"  id=\"SecurityCode\" name=\"SecurityCode\"> <br>\n" +
+                "                    <button type=\"button\" onclick=\"validateAndSend()\">Sumbit</button>\n" +
+                "                    <script>\n" +
+                "                        function fillDate(dateString){\n" +
+                "                            let myDate=new Date();\n" +
+                "                            let arrStrings=dateString.split(\"-\");\n" +
+                "                            myDate.setFullYear(arrStrings[0],Number(arrStrings[1])-1,arrStrings[2]);\n" +
+                "                            return myDate;\n" +
+                "                        }\n" +
+                "                    \n" +
+                "                        function validateAndSend(){\n" +
+                "                            let radVISA=document.getElementById(\"VISA\").checked;\n" +
+                "                            let radMC=document.getElementById(\"MASTERCARD\").checked;\n" +
+                "                            let radAE=document.getElementById(\"AMERICAN_EXPRESS\").checked;\n" +
+                "                            let radD=document.getElementById(\"DISCOVER\").checked;\n" +
+                "\n" +
+                "                            let radO=document.getElementById(\"OTHER\").checked;\n" +
+                "                            let textOV=document.getElementById(\"OTHERValue\").value;\n" +
+                "\n" +
+                "                            let numberCN=document.getElementById(\"CARD_NUMBER\").value;\n" +
+                "                            let numberSC=document.getElementById(\"SecurityCode\").value;\n" +
+                "                            let expDate=document.getElementById(\"Exp_Date\").value;\n" +
+                "                            \n" +
+                "                            \n" +
+                "                            if(radVISA==false && radMC==false && radAE==false && radD==false && radO==false){\n" +
+                "                                alert(\"There is no Card Type option please select one\");\n" +
+                "                                console.log(\"No Card Type\"+expDate+\"Hola\");\n" +
+                "                            }else if(radO==true && textOV.length==0){\n" +
+                "                                alert(\"Option 'Other' lacks specification\");\n" +
+                "                                console.log(\"No 'Other' card type\");\n" +
+                "                            }else if(numberCN.length==0){\n" +
+                "                                alert(\"There is no Card Number\");\n" +
+                "                                console.log(\"No Card Number\");\n" +
+                "                            }else if(numberSC.length==0){\n" +
+                "                                alert(\"There is no Security Number\");\n" +
+                "                                console.log(\"No Security Number\");\n" +
+                "                            }else if(expDate.length==0){\n" +
+                "                                alert(\"There is no Expiration Date\");\n" +
+                "                                console.log(\"No Expiration Date\");\n" +
+                "                            }else{\n" +
+                "                                let today=new Date();\n" +
+                "                                let expiration=fillDate(expDate);\n" +
+                "                                if(today>=expiration){\n" +
+                "                                    alert(\"Card has expired\");\n" +
+                "                                    console.log(\"Too late\");\n" +
+                "\n" +
+                "                                }else{\n" +
+                "                                    \n" +
+                "                                    document.querySelector(\"div.container div.businessInfo form[method='post']\").submit();\n" +
+                "                                }\n" +
+                "                                \n" +
+                "                                \n" +
+                "                            }\n" +
+                "                        }\n" +
+                "                    </script>\n" +
+                "                </form>";
+        model.addAttribute("businessInformation",information);
     }
 
 

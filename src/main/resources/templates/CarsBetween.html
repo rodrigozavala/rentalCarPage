@@ -41,8 +41,13 @@
         <input  type="datetime-local" id="PickUpDate" name="PickUpDate"> <br> <br>
         <label for="ReturnDate">Return Date:</label>
         <input type="datetime-local" id="ReturnDate" name="ReturnDate"> <br> <br>
+
+        <label for="cbHide">Select Type of Car</label><br>
+        <input type="checkbox" id="cbHide" name="cbHide" onclick="showAndHide()">
+
         <label for="TypeCar">Type of car:</label>
         <input type="search" id="TypeCar" name="TypeCar" list="TypesOfCars">
+
         <datalist id="TypesOfCars" name="TypesOfCars" >
           <option value="Cheaper"></option>
           <option value="Premium"></option>
@@ -50,20 +55,79 @@
           <option value="Standard"></option>
           <option value="4x4"></option>
         </datalist><br> <br>
+
+        <label for="cbHidePrice">Select Max Price per day</label><br>
+        <input type="checkbox" id="cbHidePrice" name="cbHidePrice" onclick="showAndHidePrice()">
+
         <label for="MaxPricePerDay">Maximum price per day:</label>
         <input  type="number" id="MaxPricePerDay" name="MaxPricePerDay" value="900"><br><br>
-        <button type="submit"><strong>Search</strong></button>
+        <button type="button" onclick="validateAndSend()"><strong>Search</strong></button>
       </form>
       <script>
-      function refill(){
-          //let pD=<th th:text="${PickUpDate}"></th>;
-          //let rD=<th th:text="${ReturnDate}""></th>;
-          //let maxP= <th th:text="${MaxPricePerDay}"></th>;
-          //let  tC=<th th:text="${TypeCar}"></th>;
-          //console.log(pD,rD,maxP,tC);
-        }
-       refill();
-      </script>
+                    function showAndHide(){
+                        let cdhide=document.getElementById("cbHide").checked;
+                        let bar=document.getElementById("TypeCar");
+                        if(cdhide){
+                            bar.disabled=false;
+                            console.log("hidden");
+                        }else{
+                            bar.disabled=true;
+                            console.log("visible");
+                        }
+                    }
+                    function showAndHidePrice(){
+                        let cdhide=document.getElementById("cbHidePrice").checked;
+                        let bar=document.getElementById("MaxPricePerDay");
+                        if(cdhide){
+                            bar.disabled=false;
+                            console.log("hidden");
+                        }else{
+                            bar.disabled=true;
+                            bar.value=900;
+                            console.log("visible");
+                        }
+                    }
+                    showAndHide();
+                    showAndHidePrice();
+
+                    function fillDate(dateString){
+                        let myDate=new Date();
+                        let arrStrings=dateString.split("-");
+                        let arrStrings2=arrStrings[2].split("T");
+                        myDate.setFullYear(arrStrings[0],Number(arrStrings[1])-1,arrStrings2[0]);
+                        let time0=arrStrings2[1].split(":");
+                        myDate.setHours(time0[0]);
+                        myDate.setMinutes(time0[1]);
+                        return myDate;
+                    }
+                    function validateAndSend(){
+                        let pDate=document.getElementById("PickUpDate").value;
+                        let rDate=document.getElementById("ReturnDate").value;
+
+                        console.log(pDate);
+                        console.log(rDate);
+
+                        if(pDate.length==0 || rDate.length==0){
+                            alert("You must add return and pick up date");
+                            console.log("Need Dates");
+                        }else if(pDate.length!=0 && rDate.length!=0){
+                            let today=new Date();
+                            let date1=fillDate(pDate);
+                            let date2=fillDate(rDate);
+                            if(date1<today || date2<today){
+                                alert("Pickup date and return date must be a date in the future");
+                                console.log("Invalid value of dates");
+                            }else if(date1>=date2){
+                                alert("Pickup date is before return date, and both must be different");
+                                console.log("Invalid value of dates");
+                            }else{
+                                document.getElementById("MaxPricePerDay").disabled=false;
+                                document.getElementById("TypeCar").disabled=false;
+                                document.querySelector("div.container div form[method='get']").submit();
+                            }
+                        }
+                    }
+                </script>
     </div>
     <div style="float: right;  padding: 5% 0;">
       <th th:utext="${tableInformation}"></th>
