@@ -215,7 +215,7 @@ public class ClientController {
                 message+=String.format("<td>Total amount:$ %f <br> </td>",Float.valueOf(q.getPriceperday()* ChronoUnit.DAYS.between(q.getPickupdate(),q.getReturndate())));//3
 
                 message+=String.format("<td><img src=\"%s\" width=%d height=%d> <br>\n",q.getImagepath(),100,100);//4
-                message+=String.format("Model name:<br> %s <br>\n",q.getModelname());
+                message+=String.format("Model name:<br> %s %d<br>\n",q.getModelname(),q.getIdcar());
                 message+=String.format("Car Price Per Day:$  %d <br></td>\n",q.getPriceperday());
                 message+=String.format("<td>Seats: %d <br>\n",q.getPeoplecapacity());//5
                 message+=String.format("Luggage: %d <br>\n",q.getLuggagecapacity());

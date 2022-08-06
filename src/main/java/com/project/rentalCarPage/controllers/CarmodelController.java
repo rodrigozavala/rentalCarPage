@@ -170,7 +170,7 @@ public class CarmodelController {
         for(QueryJoinCarCarmodel q: list){
             result+="<tr>";
             result+=String.format("<td><img src=\"%s\" width=%d height=%d> <br>\n",q.getImagepath(),100,100);//1
-            result+=String.format("Model name:<br>%s</td>\n",q.getModelname());
+            result+=String.format("Model name:<br>%s  %d</td>\n",q.getModelname(),q.getIdcar());
             result+=String.format("<td>Car Type:<br> %s <br>\n",q.getCartype().replace("types:"," ").replace(":"," "));//2
             result+=String.format("Car Price Per Day $:<br> %d</td>\n",q.getPriceperday());
             result+=String.format("<td>Seats:<br> %d <br>\n",q.getPeoplecapacity());//3
