@@ -34,8 +34,10 @@ public class CarController {
         LocalDateTime d1= LocalDateTime.parse(pickUpDate.replace("_"," "),formatter);
         LocalDateTime d2= LocalDateTime.parse(returnDate.replace("_"," "),formatter);
         for(Car c:carRepository.findAll()){
-            LocalDateTime start=LocalDateTime.parse(reservationRepository.findById(c.getIdreservation()).get().getPickupdate(),formatter);
-            LocalDateTime end=LocalDateTime.parse(reservationRepository.findById(c.getIdreservation()).get().getReturndate(),formatter);
+            //LocalDateTime start=LocalDateTime.parse(reservationRepository.findById(c.getIdreservation()).get().getPickupdate(),formatter);
+            //LocalDateTime end=LocalDateTime.parse(reservationRepository.findById(c.getIdreservation()).get().getReturndate(),formatter);
+            LocalDateTime start=reservationRepository.findById(c.getIdreservation()).get().getPickupdate();
+            LocalDateTime end=reservationRepository.findById(c.getIdreservation()).get().getReturndate();
             if(start.isAfter(d2)){
                 cars.add(c);
             }

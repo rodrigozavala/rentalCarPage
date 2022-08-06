@@ -89,10 +89,7 @@ public class toolsToCustomizeNav {
         response.addCookie(new Cookie(COOKIE_CARDATA,request.getParameter("selection")));
     }
 
-    public static Cookie jsonToCookie(String json){
-        return null;
 
-    }
     public static String valuesToStringCookie(String pickUpDate,String returnDate){
         LocalDateTime today=LocalDateTime.now();
         String reservationdate=DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(today).replace(" ","T");

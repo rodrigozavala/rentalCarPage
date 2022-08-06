@@ -3,6 +3,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
+
+import java.time.LocalDateTime;
+
 /*
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,8 +23,8 @@ public class Reservation {
     private Integer idcar;
     private Integer idclient;
     private Integer validity;
-    private String reservationdate;
-    private String Pickupdate;
-    private String Returndate;
+    private LocalDateTime reservationdate;
+    private LocalDateTime Pickupdate;
+    private LocalDateTime Returndate;
 
 }

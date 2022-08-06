@@ -7,7 +7,6 @@ import com.project.rentalCarPage.tables.JDBCClasses.Repositories.ClientRepositor
 import com.project.rentalCarPage.tables.JDBCClasses.Repositories.QueryJoinReservationRepository;
 import com.project.rentalCarPage.tables.JDBCClasses.Reservation;
 import com.project.rentalCarPage.tables.JDBCClasses.toolsToCustomizeNav;
-import jdk.vm.ci.meta.Local;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -165,6 +164,7 @@ public class ClientController {
             }
         }
         model.addAttribute("userInfo",message);
+        showReservations(model,list.get(0).getIdclient());
 
     }
 
@@ -206,18 +206,18 @@ public class ClientController {
             for (QueryJoinReservation q : list){
                 message+=(q.getValidity()==1)?"<tr style='background-color: #64FF33;'>":"<tr style='background-color: #F34327;'>";
                 message+=String.format("<td> Reservation id: %d <br>",q.getIdreservation());//1
-                message+=String.format("Is Valid? : %s <br>",(q.getValidity()==1)?"Yes":"No");
-                message+=String.format("Reservation Date: %s <br>",q.getReservationdate());
+                message+=String.format("Is Valid? : %s <br></td>",(q.getValidity()==1)?"Yes":"No");
+                message+=String.format("<td>Reservation Date: %s <br>",q.getReservationdate());//2
                 message+=String.format("PickUp Date: %s <br>",q.getPickupdate());
-                message+=String.format("Return Date: %s <br>",q.getReturndate());
-                LocalDateTime pDate=LocalDateTime.parse(q.getPickupdate(),formatter);
-                LocalDateTime rDate=LocalDateTime.parse(q.getReturndate(),formatter);
-                message+=String.format("Total amount:$ %f <br> </td>",q.getPriceperday()* ChronoUnit.DAYS.between(pDate,rDate));
+                message+=String.format("Return Date: %s <br></td>",q.getReturndate());
+                //LocalDateTime pDate=LocalDateTime.parse(q.getPickupdate(),formatter);
+                //LocalDateTime rDate=LocalDateTime.parse(q.getReturndate(),formatter);
+                message+=String.format("<td>Total amount:$ %f <br> </td>",Float.valueOf(q.getPriceperday()* ChronoUnit.DAYS.between(q.getPickupdate(),q.getReturndate())));//3
 
-                message+=String.format("<td><img src=\"%s\" width=%d height=%d> <br>\n",q.getImagepath(),100,100);//2
+                message+=String.format("<td><img src=\"%s\" width=%d height=%d> <br>\n",q.getImagepath(),100,100);//4
                 message+=String.format("Model name:<br> %s <br>\n",q.getModelname());
-                message+=String.format("Car Price Per Day:$  %d \n",q.getPriceperday());
-                message+=String.format("Seats: %d <br>\n",q.getPeoplecapacity());
+                message+=String.format("Car Price Per Day:$  %d <br></td>\n",q.getPriceperday());
+                message+=String.format("<td>Seats: %d <br>\n",q.getPeoplecapacity());//5
                 message+=String.format("Luggage: %d <br>\n",q.getLuggagecapacity());
                 message+=String.format("Km per L: %f <br>\n",q.getKmperl());
                 message+=String.format("Automatic transmission: %s</td>\n",(q.getAuttransmission()==1)?"Yes":"No");
