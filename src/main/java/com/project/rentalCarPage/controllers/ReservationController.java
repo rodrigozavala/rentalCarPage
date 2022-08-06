@@ -23,6 +23,7 @@ public class ReservationController {
         toolsToCustomizeNav.navCustomization(model,request,response);
         Cookie carData=new Cookie(toolsToCustomizeNav.COOKIE_CARDATA,"-1");
         Cookie dateData=new Cookie(toolsToCustomizeNav.COOKIE_DATES,"-1");
+
         carData.setMaxAge(1);
         response.addCookie(carData);
         response.addCookie(dateData);

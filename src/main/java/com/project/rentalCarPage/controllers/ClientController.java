@@ -2,9 +2,12 @@ package com.project.rentalCarPage.controllers;
 
 
 import com.project.rentalCarPage.tables.JDBCClasses.Client;
+import com.project.rentalCarPage.tables.JDBCClasses.QueryJoinReservation;
 import com.project.rentalCarPage.tables.JDBCClasses.Repositories.ClientRepository;
+import com.project.rentalCarPage.tables.JDBCClasses.Repositories.QueryJoinReservationRepository;
 import com.project.rentalCarPage.tables.JDBCClasses.Reservation;
 import com.project.rentalCarPage.tables.JDBCClasses.toolsToCustomizeNav;
+import jdk.vm.ci.meta.Local;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -24,6 +31,8 @@ public class ClientController {
 
     @Autowired
     private ClientRepository clientRepository;
+    @Autowired
+    private QueryJoinReservationRepository queryJoinReservationRepository;
     @PostMapping(value="/clientInfo")
     public String getUserProfile(Model model,HttpServletResponse response,HttpServletRequest request){
 
@@ -183,5 +192,38 @@ public class ClientController {
             showUserInfo(model,list,request);
             toolsToCustomizeNav.updateNavWithUserData(model,userName);
         }
+    }
+    private void showReservations(Model model,Integer id){
+        String message="";
+        ArrayList<QueryJoinReservation> list= queryJoinReservationRepository.findReservationsById(id);
+        if(list==null){
+            message+="<h2>There are no reservations to show</h2>";
+        }else if(list.size()==0){
+            message+="<h2>There are no reservations to show</h2>";
+        }else{
+            message+="<table class=\"table table-striped table-hover\">";
+            DateTimeFormatter formatter= DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            for (QueryJoinReservation q : list){
+                message+=(q.getValidity()==1)?"<tr style='background-color: #64FF33;'>":"<tr style='background-color: #F34327;'>";
+                message+=String.format("<td> Reservation id: %d <br>",q.getIdreservation());//1
+                message+=String.format("Is Valid? : %s <br>",(q.getValidity()==1)?"Yes":"No");
+                message+=String.format("Reservation Date: %s <br>",q.getReservationdate());
+                message+=String.format("PickUp Date: %s <br>",q.getPickupdate());
+                message+=String.format("Return Date: %s <br>",q.getReturndate());
+                LocalDateTime pDate=LocalDateTime.parse(q.getPickupdate(),formatter);
+                LocalDateTime rDate=LocalDateTime.parse(q.getReturndate(),formatter);
+                message+=String.format("Total amount:$ %f <br> </td>",q.getPriceperday()* ChronoUnit.DAYS.between(pDate,rDate));
+
+                message+=String.format("<td><img src=\"%s\" width=%d height=%d> <br>\n",q.getImagepath(),100,100);//2
+                message+=String.format("Model name:<br> %s <br>\n",q.getModelname());
+                message+=String.format("Car Price Per Day:$  %d \n",q.getPriceperday());
+                message+=String.format("Seats: %d <br>\n",q.getPeoplecapacity());
+                message+=String.format("Luggage: %d <br>\n",q.getLuggagecapacity());
+                message+=String.format("Km per L: %f <br>\n",q.getKmperl());
+                message+=String.format("Automatic transmission: %s</td>\n",(q.getAuttransmission()==1)?"Yes":"No");
+                message+="</tr>";
+            }
+        }
+        model.addAttribute("clientReservations",message);
     }
 }

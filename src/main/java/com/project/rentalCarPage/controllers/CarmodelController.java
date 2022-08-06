@@ -161,10 +161,12 @@ public class CarmodelController {
 
             }
 
-
         }
 
         result+="<table class=\"table table-striped table-hover\">";
+        //DateTimeFormatter formatter= DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        //LocalDateTime today=LocalDateTime.now();
+        //LocalDateTime returnDate;
         for(QueryJoinCarCarmodel q: list){
             result+="<tr>";
             result+=String.format("<td><img src=\"%s\" width=%d height=%d> <br>\n",q.getImagepath(),100,100);//1
