@@ -34,7 +34,10 @@ public class ClientController {
     private QueryJoinReservationRepository queryJoinReservationRepository;
     @PostMapping(value="/clientInfo")
     public String getUserProfile(Model model,HttpServletResponse response,HttpServletRequest request){
-
+        /*String something=request.getHttpServletMapping().toString()+"\n"+
+                request.getRequestURL()+"\n"+request.getContextPath().toString()+request.getPathTranslated()+
+                request.getServletPath()+request.getSession().getServletContext().getContextPath();
+        model.addAttribute("aTest",something);*/
         if(request.getCookies()!=null){//(COOKIES) we have cookies
             Cookie myCookie=null;
             Cookie userName=null;
@@ -59,7 +62,6 @@ public class ClientController {
             }
 
 
-
             if(myCookie==null){//(COOKIES)(NOT CONNECTED)(FIRST TIME)this is the first time we enter the site
                 toolsToCustomizeNav.navCustomization(model,request,response);
                 noUser(model);
@@ -70,12 +72,19 @@ public class ClientController {
                 //Getting the parameters
                 String email=request.getParameter("Email");
                 String password=request.getParameter("Password");
+                String phone=request.getParameter("Phone");
                 //System.out.println(email+"###"+password);
                 if(email !=null && password!=null){//(COOKIES)(NOT CONNECTED)(LOGIN)if we come from login
                     //we use authentication to connect or send a message of
                     //failed login, wrong password or email
-                    userAuthentication(model,request,response,email,password);
+                    if(phone==null){
+                        userAuthentication(model,request,response,email,password);
+                    }else{//The user is signing-up
+
+                        signingUp(model,request,response);
+                    }
                     //there is no need to add toolsToCustomizeNav.navCustomization(model,request,response);
+
                 }else{//(COOKIES)(NOT CONNECTED)(NO LOGIN)we don't came from login
                     noUser(model);
                     toolsToCustomizeNav.navCustomization(model,request,response);
@@ -111,6 +120,14 @@ public class ClientController {
         return "login";
     }
 
+    @GetMapping(value="/SignUp")
+    public  String showSignUpView(Model model,HttpServletResponse response,HttpServletRequest request){
+        toolsToCustomizeNav.navCustomization(model,request,response);
+
+        return "SignUp";
+    }
+
+
     @GetMapping(value="/logout")
     public  String showLogoutView(Model model,HttpServletResponse response,HttpServletRequest request){
         toolsToCustomizeNav.navCustomization(model,request,response);
@@ -140,15 +157,7 @@ public class ClientController {
         message+=String.format("<h3>Email: %s</h3><br>",list.get(0).getEmail());
         message+=String.format("<h3>Phone: %s</h3><br>",list.get(0).getPhone());
         message+=String.format("<h3>Age: %s</h3><br>",list.get(0).getAge());
-        /*
-        Cookie carData=Arrays.stream(request.getCookies()).
-                filter(c->c.getName().equals(toolsToCustomizeNav.COOKIE_CARDATA)).
-                findFirst().get();
-        if(carData!=null){
-            JSONObject res= new JSONObject(carData.getValue());
-            message+=String.format("<br><form><button method=\"get\" action=\"\">Change values</button></form>");
 
-        }*/
         message+="<br><form method=\"get\" action=\"changeData\"><button type=\"submit\">Change User data</button></form>";
         if(request.getCookies()!=null){
             for(Cookie c: request.getCookies()){
@@ -193,6 +202,26 @@ public class ClientController {
             toolsToCustomizeNav.updateNavWithUserData(model,userName);
         }
     }
+    private void signingUp(Model model,HttpServletRequest request,HttpServletResponse response){
+        String email=request.getParameter("Email");
+        ArrayList<Client> list=clientRepository.findByEmail("%"+email+"%");
+        if(list.size()==0){
+            String name=request.getParameter("Name");
+            String lastname=request.getParameter("Lastname");
+            String phone=request.getParameter("Phone");
+            String password=request.getParameter("Password");
+            Integer age=Integer.valueOf(request.getParameter("Age"));
+            clientRepository.insertClient(name,lastname,email,password,phone,age);
+            String message=String.format("<h1>Welcome to Rental Car %s</h1>",name);
+            model.addAttribute("aTest",message);
+            userAuthentication(model,request,response,email,password);
+
+        }else{
+            String message=String.format("<h1>This email: %s <br> already belongs to an account,<br>",email) +
+                    " please enter with another email account or click on <a href=\"#\">Password recovery</a></h1>";
+            model.addAttribute("aTest",message);
+        }
+    }
     private void showReservations(Model model,Integer id){
         String message="";
         ArrayList<QueryJoinReservation> list= queryJoinReservationRepository.findReservationsById(id);
@@ -210,9 +239,7 @@ public class ClientController {
                 message+=String.format("<td>Reservation Date: %s <br>",q.getReservationdate());//2
                 message+=String.format("PickUp Date: %s <br>",q.getPickupdate());
                 message+=String.format("Return Date: %s <br></td>",q.getReturndate());
-                //LocalDateTime pDate=LocalDateTime.parse(q.getPickupdate(),formatter);
-                //LocalDateTime rDate=LocalDateTime.parse(q.getReturndate(),formatter);
-                message+=String.format("<td>Total amount:$ %f <br> </td>",Float.valueOf(q.getPriceperday()* ChronoUnit.DAYS.between(q.getPickupdate(),q.getReturndate())));//3
+                message+=String.format("Total amount:$ %f <br> </td>",Float.valueOf(q.getPriceperday()* ChronoUnit.DAYS.between(q.getPickupdate(),q.getReturndate())));//3
 
                 message+=String.format("<td><img src=\"%s\" width=%d height=%d> <br>\n",q.getImagepath(),100,100);//4
                 message+=String.format("Model name:<br> %s %d<br>\n",q.getModelname(),q.getIdcar());
@@ -221,6 +248,15 @@ public class ClientController {
                 message+=String.format("Luggage: %d <br>\n",q.getLuggagecapacity());
                 message+=String.format("Km per L: %f <br>\n",q.getKmperl());
                 message+=String.format("Automatic transmission: %s</td>\n",(q.getAuttransmission()==1)?"Yes":"No");
+                if(q.getValidity()==1){
+                    message+="<td><form method=\"post\" action=\"cancelReservation\">";
+                    message+=String.format("<input type=\"hidden\" name=\"selectedRes\" value=%d>", q.getIdreservation());
+                    message+="<button type=\"submit\"><strong>Cancel this <br> reservation </strong></button></form></td>\n";
+                }else{
+                    message+="<td><form method=\"post\" action=\"cancelReservation\">";
+                    message+=String.format("<input type=\"hidden\" name=\"selectedRes\" value=%d>", q.getIdreservation());
+                    message+="<button disabled type=\"submit\"><strong>Cancel this <br> reservation </strong></button></form></td>\n";
+                }
                 message+="</tr>";
             }
         }

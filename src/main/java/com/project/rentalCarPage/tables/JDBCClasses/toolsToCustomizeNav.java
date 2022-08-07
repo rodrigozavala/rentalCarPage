@@ -27,7 +27,7 @@ public class toolsToCustomizeNav {
                 "                    <a href=\"http://localhost:8989/login\" >Login</a>\n" +
                 "                </li>\n" +
                 "                <li>\n" +
-                "                    <a href=\"#\" >Sign Up</a>\n" +
+                "                    <a href=\"http://localhost:8989/SignUp\" >Sign Up</a>\n" +
                 "                </li>";
 
         Cookie myCookieToken=null;
@@ -79,9 +79,6 @@ public class toolsToCustomizeNav {
                 "  </ul>\n" +
                 "</div></li><br><br>",userName.getValue());
 
-        String userInfo=String.format("<li> " +
-                "<a href=#>%s</a>" +
-                "</li>",userName.getValue());
         model.addAttribute("navInformation",userInfo0);
     }
 

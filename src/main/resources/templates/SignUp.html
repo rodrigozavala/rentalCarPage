@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignUp</title>
+    <link href="webjars/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="webjars/jquery/1.12.4/jquery.min.js"></script>
+    <script src="webjars/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div  style="margin-left: 35%; margin-right: 35%;">
+        <form class="form-login" method="post" action="clientInfo">
+            <br><br><br>
+            <h3>Please fill all the fields in the form</h3>
+
+            <div>
+                <label for="Name">Name: </label>
+                <input class="form-control" type="text" id="Name" name="Name"> <br> <br>
+            </div>
+
+            <div>
+                <label for="Lastname">LastName: </label>
+                <input class="form-control" type="text" id="Lastname" name="Lastname"><br><br><br>
+            </div>
+
+            <div>
+                <label for="Email">Email: </label>
+                <input class="form-control" type="email" id="Email" name="Email"> <br><br>
+            </div>
+
+            <div >
+                <label for="Password">Password: </label>
+                <input class="form-control" type="password" id="Password" name="Password"> <br> <br><br>
+            </div>
+            <div>
+                <label for="Phone">Phone: </label>
+                <input class="form-control" type="tel" id="Phone" name="Phone"><br><br>
+            </div>
+            <div>
+                <label for="Age">Age: </label>
+                <input class="form-control" type="number" id="Age" name="Age"> <br><br><br>
+            </div>
+
+
+            <div>
+                <a href="/index">Go back to the beginning</a>
+            </div>
+
+            <button type="button" onclick="validateAndSend()"><strong>Login</strong></button>
+            <h1 class="WarningMessage" id="WarningMessage" ></h1>
+            <script>
+              function validateAndSend(){
+                let email=document.getElementById("Email").value;
+                let password=document.getElementById("Password").value;
+                let age=document.getElementById("Age").value;
+                let phone=document.getElementById("Phone").value;
+                let name=document.getElementById("Name").value;
+                let lname=document.getElementById("Lastname").value;
+
+                if(email.length==0 && password.length==0){
+                    alert("There is no email and neither password");
+                    console.log("No Email no Password");
+                }else if(email.length==0){
+                    alert("There is no email");
+                    console.log("No email");
+                }else if(password.length==0){
+                    alert("There is no password");
+                    console.log("No Password");
+                }else if(age.length==0 || phone.length==0 || name.length==0 || lname.length==0){
+                    alert("There is a field missing");
+                    console.log("Missing field");
+                }else if(Number(age)<18){
+                    alert("You must be at least 18 years old to rent a car");
+                    console.log("Too young");
+                }else{
+                    document.querySelector("div.container div form[method='post']").submit();
+                }
+              }
+          </script>
+        </form>
+    </div>
+</div>
+</body>
+</html>

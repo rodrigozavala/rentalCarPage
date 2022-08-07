@@ -7,6 +7,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public interface ReservationRepository extends CrudRepository<Reservation, Integer>{
     @Modifying
     @Transactional
@@ -18,5 +21,15 @@ public interface ReservationRepository extends CrudRepository<Reservation, Integ
                                   @Param("resDate") String resDate,
                                   @Param("pDate")String pDate,
                                   @Param("rDate")String rDate);
+
+    @Query("SELECT *\n" +
+            "FROM reservation as r\n" +
+            "WHERE r.idreservation IN (SELECT MAX(reservation.idreservation)\n" +
+            "FROM reservation);")
+    public ArrayList<Reservation> checklast();
+    @Modifying
+    @Transactional
+    @Query("UPDATE reservation SET reservation.validity = 0 WHERE (reservation.idReservation = :idRes);")
+    public int cancelReservation(@Param("idRes") Integer idRes);
 
 }
