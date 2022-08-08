@@ -22,6 +22,7 @@ public class toolsToCustomizeNav {
     public static final String COOKIE_CARDATA = "RCDATA";
     public static final String COOKIE_DATES = "RCDATES";
     public static final String COOKIE_USER_NAME = "RCU";
+    public static final String COOKIE_EMPLOYEE="AERCID";
     public static void navCustomization(Model model, HttpServletRequest request, HttpServletResponse response){
         String navInformation="<li>\n" +
                 "                    <a href=\"http://localhost:8989/login\" >Login</a>\n" +

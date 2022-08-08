@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>EmployeesMainPage</title>
+</head>
+<body>
+<h1>Rental car</h1>
+<div class="container">
+    <nav class="nav-main" style="display: inline;">
+        <img src="/img/CarLogo.png" alt="A car Logo" class="nav-car">
+        <ul class="nav nav-tabs">
+            <li>
+                <a href="http://localhost:8989/logoutEmployees" >Logout</a>
+            </li>
+            <!--
+            <li>
+                <a href="http://localhost:8989/CarsBetween" >Rent a car</a>
+            </li>
+            <th th:utext="${navInformationE}"></th>-->
+
+        </ul>
+
+    </nav>
+    <hr>
+    <header class="showcase" >
+        <h1>Rent a <strong>car</strong> today</h1><br>
+        <h3>Do you want a ride?</h3>
+    </header>
+
+</div>
+<div class="container">
+    <div style=" float: left;  padding: 10% 0;">
+        <th th:utext="${employeeTables1}"></th>
+    </div>
+    <div style="float: right;  padding: 10% 0;">
+        <th th:utext="${employeeTables2}"></th>
+    </div>
+</div>
+
+</body>
+</html>
