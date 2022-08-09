@@ -5,11 +5,13 @@ import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public interface ReservationRepository extends CrudRepository<Reservation, Integer>{
     @Modifying
     @Transactional
@@ -26,7 +28,7 @@ public interface ReservationRepository extends CrudRepository<Reservation, Integ
             "FROM reservation as r\n" +
             "WHERE r.idreservation IN (SELECT MAX(reservation.idreservation)\n" +
             "FROM reservation);")
-    public ArrayList<Reservation> checklast();
+    public ArrayList<Reservation> checkLast();
     @Modifying
     @Transactional
     @Query("UPDATE reservation SET reservation.validity = 0 WHERE (reservation.idReservation = :idRes);")

@@ -2,7 +2,12 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EmployeesMainPage</title>
+    <link href="webjars/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="webjars/jquery/1.12.4/jquery.min.js"></script>
+    <script src="webjars/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
 <h1>Rental car</h1>
@@ -30,6 +35,59 @@
 
 </div>
 <div class="container">
+    <div class="search" style="margin-left: 35%; margin-right: 35%;">
+        <form class="form-group" method="get" action="employeesMainPage">
+            <h3>Search reservation by ID</h3>
+            <div>
+                <label for="resIdSearch">Reservation ID:</label>
+                <input class="form-control" type="number" id="resIdSearch" name="resIdSearch"> <br> <br>
+            </div>
+            <div>
+                <label for="searchAll">See all reservations</label>
+                <input class="form-control" type="checkbox" id="searchAll" name="searchAll" onclick="showAndHideSearch()"> <br> <br>
+            </div>
+            <button type="button" onclick="validateAndSend()"><strong>Search</strong></button>
+            <script>
+            function showAndHideSearch(){
+                let sAll=document.getElementById("searchAll").checked;
+                let bar=document.getElementById("resIdSearch");
+                if(sAll){
+                    bar.disabled=true;
+                    console.log("visible");
+                }else{
+                    bar.disabled=false;
+                    console.log("hidden");
+                }
+            }
+            document.getElementById("searchAll").checked=true;
+            document.getElementById("resIdSearch").disabled=true;
+            function validateAndSend(){
+                let search=document.getElementById("resIdSearch").value;
+                if(document.getElementById("searchAll").checked){
+                    document.getElementById("resIdSearch").disabled=false;
+                    document.getElementById("resIdSearch").value="-1";
+                    search="-1";
+                }
+                if(search.length==0){
+                    alert("There is no id to search");
+                    console.log("No search");
+                }else{
+                    if(Number(search)<-1){
+                        document.getElementById("resIdSearch").value="-1";
+                        search="-1";
+                    }
+
+                    document.querySelector("div.container div.search form[method='get']").submit();
+                }
+            }
+          </script>
+        </form>
+
+    </div>
+    <br>
+    <br>
+    <br>
+
     <div style=" float: left;  padding: 10% 0;">
         <th th:utext="${employeeTables1}"></th>
     </div>

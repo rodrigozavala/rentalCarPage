@@ -79,4 +79,13 @@ public interface QueryJoinCarCarmodelRepository extends CrudRepository<QueryJoin
             "WHERE (car.idcar = :myIdCar );")
     public ArrayList<QueryJoinCarCarmodel> findByIdCar(@Param("myIdCar") Integer idCar);
 
+    @Query("SELECT DISTINCT car.idcar, carmodel.modelname, carmodel.kmperl,\n" +
+            "carmodel.auttransmission, carmodel.peoplecapacity,\n" +
+            "carmodel.luggagecapacity, carmodel.cartype, car.priceperday,\n" +
+            "carmodel.imagepath, car.availability\n" +
+            "FROM  car\n" +
+            "INNER JOIN carmodel\n" +
+            "ON carmodel.idmodel=car.idmodel;")
+    public ArrayList<QueryJoinCarCarmodel> findAll();
+
 }

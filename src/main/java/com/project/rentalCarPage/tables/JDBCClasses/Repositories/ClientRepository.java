@@ -5,10 +5,12 @@ import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 
+@Repository
 public interface ClientRepository extends CrudRepository<Client,Integer>{
     @Query("SELECT * FROM client \n" +
             "WHERE client.email LIKE :email\n" +

@@ -1,11 +1,8 @@
 package com.project.rentalCarPage.controllers;
 
 
-import com.project.rentalCarPage.tables.JDBCClasses.Employee;
-import com.project.rentalCarPage.tables.JDBCClasses.QueryJoinReservation;
-import com.project.rentalCarPage.tables.JDBCClasses.Repositories.EmployeeRepository;
-import com.project.rentalCarPage.tables.JDBCClasses.Repositories.QueryJoinReservationRepository;
-import com.project.rentalCarPage.tables.JDBCClasses.toolsToCustomizeNav;
+import com.project.rentalCarPage.tables.JDBCClasses.*;
+import com.project.rentalCarPage.tables.JDBCClasses.Repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +25,15 @@ public class EmployeeController {
     @Autowired
     QueryJoinReservationRepository query;
 
+    @Autowired
+    QueryJoinCarCarmodelRepository queryJoinCarCarmodelRepository;
+
+    @Autowired
+    ReservationRepository reservationRepository;
+
+    @Autowired
+    CarRepository carRepository;
+
     @GetMapping(value = "/loginEmployees")
     public String loginEmployee(){
         return "loginEmployees";
@@ -45,8 +51,8 @@ public class EmployeeController {
             String cookieMessage=list.get(0).getUsername()+"###"+list.get(0).getIdemployee();
             Cookie sessionEmployee=new Cookie(toolsToCustomizeNav.COOKIE_EMPLOYEE,cookieMessage);
             response.addCookie(sessionEmployee);
-
-
+            showReservationsInfo(model,request,response);
+            showCarsInfo(model,request,response);
 
         }
         return "employeesMainPage";
@@ -61,7 +67,51 @@ public class EmployeeController {
                 }
             }
         }
+
         if(cookieContent.equals("")==false){
+            boolean carOp=(request.getParameter("carOp")!=null)?true:false;
+            if(carOp){
+                Integer makeAvailable=Integer.valueOf(request.getParameter("available"));
+                Integer makeUnavailable=Integer.valueOf(request.getParameter("unavailable"));
+                showReservationsInfo(model,request,response);
+                if(makeAvailable!=-1){
+                    carRepository.makeAvailable(makeAvailable);
+                }
+                if(makeUnavailable!=-1){
+                    carRepository.makeUnavailable(makeUnavailable);
+                }
+
+            }
+
+            boolean resOp=(request.getParameter("resOp")!=null)?true:false;
+            if(resOp){
+                showReservationsInfo(model,request,response);
+                if(request.getParameter("selResToCancel")!=null){
+                    Integer resCancel=Integer.valueOf(request.getParameter("selResToCancel"));
+                    reservationRepository.cancelReservation(resCancel);
+                }
+                if(request.getParameter("selResToExecute")!=null){
+                    Integer resExecute=Integer.valueOf(request.getParameter("selResToExecute"));
+
+                    Reservation res=reservationRepository.findById(resExecute).get();
+                    carRepository.setReservationAndClient(res.getIdreservation(),res.getIdclient(),res.getIdcar());
+                    carRepository.makeUnavailable(res.getIdcar());
+                }
+
+
+            }
+
+            if(request.getParameter("resIdSearch")!=null){
+                Integer searchIdRes=Integer.valueOf(request.getParameter("resIdSearch"));
+                if(searchIdRes!=-1){
+                    showReservationsInfo(model,request,response,searchIdRes);
+                }else{
+                    showReservationsInfo(model,request,response);
+                }
+            }
+
+
+            showCarsInfo(model,request,response);
 
         }else{
             String message="<h1>There is no employee</h1>";
@@ -85,7 +135,7 @@ public class EmployeeController {
         return "logoutEmployees";
     }
 
-    private void showRentalCarInfo(Model model, HttpServletRequest request, HttpServletResponse response){
+    private void showReservationsInfo(Model model, HttpServletRequest request, HttpServletResponse response){
         ArrayList<QueryJoinReservation>list=(ArrayList<QueryJoinReservation>)query.findAll();
         String result="<table class=\"table table-striped table-hover\">";
         for(QueryJoinReservation q: list){
@@ -97,21 +147,125 @@ public class EmployeeController {
             result+=String.format("Return Date: %s <br>",q.getReturndate().toString().replace("T"," "));
             result+=String.format("Reservation Date: %s <br>",q.getReservationdate().toString().replace("T"," "));
             result+=String.format("Is valid?: %s <br> </td>",(q.getValidity()==1)?"Yes":"No");
+
             result+=String.format("<td>Id Car:%d <br>",q.getIdcar());
-            result+=String.format("<img src=\"%s\" width=%d height=%d> <br>",q.getImagepath(),100,100);
-            result+=String.format("Has Automatic transmission?: %s<br>",(q.getAuttransmission()==1)?"Yes":"No");
+            result+=String.format("<img src=\"%s\" width=%d height=%d> <br>",q.getImagepath(),150,150);
+            result+=String.format("Model name: %s <br></td>",q.getModelname());
+
+            result+=String.format("<td>Has Automatic transmission?: %s<br>",(q.getAuttransmission()==1)?"Yes":"No");//1
             result+=String.format("Is the car available?: %s<br>",(q.getAvailability()==1)?"Yes":"No");
-            result+=String.format("<br>",q.getKmperl());
-            result+=String.format("<br>",q.getModelname());
-            result+=String.format("<br>",q.getPeoplecapacity());
-            result+=String.format("<br>",q.getLuggagecapacity());
+            result+=String.format("Km per L: %f<br>",q.getKmperl());
+            result+=String.format("Number of seats: %d<br>",q.getPeoplecapacity());
+            result+=String.format("Luggage capacity: %d<br></td>",q.getLuggagecapacity());
 
 
+            result+=String.format("<td>Client name: %s %s <br>",q.getName(),q.getLastname());
+            result+=String.format("Email: %s<br>",q.getEmail());
+            result+=String.format("Phone number: %s <br></td>",q.getPhone());
+
+            result+="<td><form method=\"get\" action=\"employeesMainPage\">";
+            result+=String.format("<input type=\"hidden\" name=\"resOp\" value=%d>", 1);
+            result+=String.format("<input type=\"hidden\" name=\"selResToCancel\" value=%d>", q.getIdreservation());
+            result+="<button type=\"submit\"><strong>Cancel this <br> reservation</strong></button></form><br><br>\n";
+
+            result+="<form method=\"get\" action=\"employeesMainPage\">";
+            result+=String.format("<input type=\"hidden\" name=\"resOp\" value=%d>", 1);
+            result+=String.format("<input type=\"hidden\" name=\"selResToExecute\" value=%d>", q.getIdreservation());
+            result+=String.format("<input type=\"hidden\" name=\"carToReserve\" value=%d>", q.getIdcar());
+            result+="<button type=\"submit\"><strong>Link car to <br> reservation</strong></button></form></td>\n";
 
             result+="</tr>";
         }
         result+="</table>";
-        model.addAttribute("",result);
+        model.addAttribute("employeeTables1",result);
+
+    }
+    private void showCarsInfo(Model model, HttpServletRequest request, HttpServletResponse response){
+        ArrayList<QueryJoinCarCarmodel> list0=queryJoinCarCarmodelRepository.findAll();
+        String result="<table class=\"table table-striped table-hover\">";
+        for(QueryJoinCarCarmodel q: list0){
+            result+="<tr>";
+
+            result+=String.format("<td>Id Car:%d <br>",q.getIdcar());
+            result+=String.format("<img src=\"%s\" width=%d height=%d> <br>",q.getImagepath(),150,150);
+            result+=String.format("Model name: %s <br></td>",q.getModelname());
+
+            result+=String.format("<td>Has Automatic transmission?: %s<br>",(q.getAuttransmission()==1)?"Yes":"No");//1
+            result+=String.format("Is the car available?: %s<br>",(q.getAvailability()==1)?"Yes":"No");
+            result+=String.format("Km per L: %f<br>",q.getKmperl());
+            result+=String.format("Price per day: $ %d <br>",q.getPriceperday());
+            result+=String.format("Number of seats: %d<br>",q.getPeoplecapacity());
+            result+=String.format("Luggage capacity: %d<br></td>",q.getLuggagecapacity());
+
+            result+="<td><form method=\"get\" action=\"employeesMainPage\">";
+            result+=String.format("<input type=\"hidden\" name=\"carOp\" value=%d>", 1);
+            result+=String.format("<input type=\"hidden\" name=\"unavailable\" value=%d>",-1);
+            result+=String.format("<input type=\"hidden\" name=\"available\" value=%d>", q.getIdcar());
+            result+=String.format("<button %s type=\"submit\"><strong>Set car as <br> available</strong></button></form></td>\n",
+                    (q.getAvailability()==1)?"disabled":"");
+
+            result+="<td><form method=\"get\" action=\"employeesMainPage\">";
+            result+=String.format("<input type=\"hidden\" name=\"carOp\" value=%d>", 1);
+            result+=String.format("<input type=\"hidden\" name=\"unavailable\" value=%d>", q.getIdcar());
+            result+=String.format("<input type=\"hidden\" name=\"available\" value=%d>", -1);
+            result+=String.format("<button %s type=\"submit\"><strong>Set car as <br> unavailable </strong></button></form></td>\n",
+                    (q.getAvailability()==1)?"":"disabled");
+
+            result+="</tr>";
+        }
+        result+="</table>";
+
+        model.addAttribute("employeeTables2",result);
+    }
+
+    private void showReservationsInfo(Model model, HttpServletRequest request, HttpServletResponse response,Integer idRes){
+        ArrayList<QueryJoinReservation>list=(ArrayList<QueryJoinReservation>)query.findReservationsByResId(idRes);
+        if(list.size()==0){
+            String message="<h2>There is no such reservation</h2>";
+            model.addAttribute("employeeTables1",message);
+            return;
+        }
+        String result="<table class=\"table table-striped table-hover\">";
+        for(QueryJoinReservation q: list){
+            result+=(q.getValidity()==1)?"<tr class=\"table-success\">":"<tr class=\"table-danger\">";
+            result+=String.format("<td>Reservation's Id: %d <br>",q.getIdreservation());//1
+            result+=String.format("Price per day: $ %d <br>",q.getPriceperday());
+            result+=String.format("Total amount: $ %f <br>", Float.valueOf(ChronoUnit.DAYS.between(q.getPickupdate(),q.getReturndate())*q.getPriceperday()));
+            result+=String.format("PickUp Date: %s <br>",q.getPickupdate().toString().replace("T"," "));
+            result+=String.format("Return Date: %s <br>",q.getReturndate().toString().replace("T"," "));
+            result+=String.format("Reservation Date: %s <br>",q.getReservationdate().toString().replace("T"," "));
+            result+=String.format("Is valid?: %s <br> </td>",(q.getValidity()==1)?"Yes":"No");
+
+            result+=String.format("<td>Id Car:%d <br>",q.getIdcar());
+            result+=String.format("<img src=\"%s\" width=%d height=%d> <br>",q.getImagepath(),150,150);
+            result+=String.format("Model name: %s <br></td>",q.getModelname());
+
+            result+=String.format("<td>Has Automatic transmission?: %s<br>",(q.getAuttransmission()==1)?"Yes":"No");//1
+            result+=String.format("Is the car available?: %s<br>",(q.getAvailability()==1)?"Yes":"No");
+            result+=String.format("Km per L: %f<br>",q.getKmperl());
+            result+=String.format("Number of seats: %d<br>",q.getPeoplecapacity());
+            result+=String.format("Luggage capacity: %d<br></td>",q.getLuggagecapacity());
+
+
+            result+=String.format("<td>Client name: %s %s <br>",q.getName(),q.getLastname());
+            result+=String.format("Email: %s<br>",q.getEmail());
+            result+=String.format("Phone number: %s <br></td>",q.getPhone());
+
+            result+="<td><form method=\"get\" action=\"employeesMainPage\">";
+            result+=String.format("<input type=\"hidden\" name=\"resOp\" value=%d>", 1);
+            result+=String.format("<input type=\"hidden\" name=\"selResToCancel\" value=%d>", q.getIdreservation());
+            result+="<button type=\"submit\"><strong>Cancel this <br> reservation</strong></button></form><br><br>\n";
+
+            result+="<form method=\"get\" action=\"employeesMainPage\">";
+            result+=String.format("<input type=\"hidden\" name=\"resOp\" value=%d>", 1);
+            result+=String.format("<input type=\"hidden\" name=\"selResToExecute\" value=%d>", q.getIdreservation());
+            result+=String.format("<input type=\"hidden\" name=\"carToReserve\" value=%d>", q.getIdcar());
+            result+="<button type=\"submit\"><strong>Link car to <br> reservation</strong></button></form></td>\n";
+
+            result+="</tr>";
+        }
+        result+="</table>";
+        model.addAttribute("employeeTables1",result);
 
     }
 }
