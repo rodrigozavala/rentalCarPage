@@ -87,12 +87,25 @@
     <br>
     <br>
     <br>
-
     <div style=" float: left;  padding: 10% 0;">
-        <th th:utext="${employeeTables1}"></th>
+        <a class="btn btn-primary"  data-toggle="collapse" href="#collapseTable" role="button" aria-expanded="false" aria-controls="collapseExample">
+            See reservations
+        </a>
     </div>
-    <div style="float: right;  padding: 10% 0;">
-        <th th:utext="${employeeTables2}"></th>
+    <div style=" float: right;  padding: 10% 0;">
+        <a class="btn btn-primary"  data-toggle="collapse" href="#collapseTable2" role="button" aria-expanded="false" aria-controls="collapseExample">
+            See All Cars
+        </a>
+    </div>
+    <div class="collapse" id="collapseTable">
+        <div class="card card-body" >
+            <th th:utext="${employeeTables1}"></th>
+        </div>
+    </div>
+    <div class="collapse" id="collapseTable2">
+        <div class="card card-body">
+            <th th:utext="${employeeTables2}"></th>
+        </div>
     </div>
 </div>
 

@@ -238,7 +238,7 @@ public class ClientController {
                 message+=String.format("Is Valid? : %s <br></td>",(q.getValidity()==1)?"Yes":"No");
                 message+=String.format("<td>Reservation Date: %s <br>",q.getReservationdate());//2
                 message+=String.format("PickUp Date: %s <br>",q.getPickupdate());
-                message+=String.format("Return Date: %s <br></td>",q.getReturndate());
+                message+=String.format("Return Date: %s <br>",q.getReturndate());
                 message+=String.format("Total amount:$ %f <br> </td>",Float.valueOf(q.getPriceperday()* ChronoUnit.DAYS.between(q.getPickupdate(),q.getReturndate())));//3
 
                 message+=String.format("<td><img src=\"%s\" width=%d height=%d> <br>\n",q.getImagepath(),100,100);//4

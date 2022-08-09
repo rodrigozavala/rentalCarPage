@@ -137,9 +137,9 @@ public class EmployeeController {
 
     private void showReservationsInfo(Model model, HttpServletRequest request, HttpServletResponse response){
         ArrayList<QueryJoinReservation>list=(ArrayList<QueryJoinReservation>)query.findAll();
-        String result="<table class=\"table table-striped table-hover\">";
+        String result="<table class=\"table table-hover\">";
         for(QueryJoinReservation q: list){
-            result+=(q.getValidity()==1)?"<tr class=\"table-success\">":"<tr class=\"table-danger\">";
+            result+=(q.getValidity()==1)?"<tr class=\"bg-success\">":"<tr class=\"bg-danger\">";
             result+=String.format("<td>Reservation's Id: %d <br>",q.getIdreservation());//1
             result+=String.format("Price per day: $ %d <br>",q.getPriceperday());
             result+=String.format("Total amount: $ %f <br>", Float.valueOf(ChronoUnit.DAYS.between(q.getPickupdate(),q.getReturndate())*q.getPriceperday()));
@@ -181,12 +181,13 @@ public class EmployeeController {
 
     }
     private void showCarsInfo(Model model, HttpServletRequest request, HttpServletResponse response){
-        ArrayList<QueryJoinCarCarmodel> list0=queryJoinCarCarmodelRepository.findAll();
-        String result="<table class=\"table table-striped table-hover\">";
-        for(QueryJoinCarCarmodel q: list0){
+        ArrayList<QueryJoinReservation> list0=query.findAllCars();
+        String result="<h2>All Cars</h2>";
+        result+="<table class=\"table table-striped table-hover\">";
+        for(QueryJoinReservation q: list0){
             result+="<tr>";
 
-            result+=String.format("<td>Id Car:%d <br>",q.getIdcar());
+            result+=String.format("<td>Id Car: %d <br>",q.getIdcar());
             result+=String.format("<img src=\"%s\" width=%d height=%d> <br>",q.getImagepath(),150,150);
             result+=String.format("Model name: %s <br></td>",q.getModelname());
 
@@ -197,14 +198,26 @@ public class EmployeeController {
             result+=String.format("Number of seats: %d<br>",q.getPeoplecapacity());
             result+=String.format("Luggage capacity: %d<br></td>",q.getLuggagecapacity());
 
+            result+=String.format("<td>Client name: %s %s <br>",q.getName(),q.getLastname());
+            result+=String.format("Email: %s<br>",q.getEmail());
+            result+=String.format("Phone number: %s <br></td>",q.getPhone());
+
+            result+=String.format("<td>Reservation's Id: %d <br>",q.getIdreservation());//1
+            result+=String.format("Price per day: $ %d <br>",q.getPriceperday());
+            result+=String.format("Total amount: $ %f <br>", Float.valueOf(ChronoUnit.DAYS.between(q.getPickupdate(),q.getReturndate())*q.getPriceperday()));
+            result+=String.format("PickUp Date: %s <br>",q.getPickupdate().toString().replace("T"," "));
+            result+=String.format("Return Date: %s <br>",q.getReturndate().toString().replace("T"," "));
+            result+=String.format("Reservation Date: %s <br>",q.getReservationdate().toString().replace("T"," "));
+            result+=String.format("Is valid?: %s <br> </td>",(q.getValidity()==1)?"Yes":"No");
+
             result+="<td><form method=\"get\" action=\"employeesMainPage\">";
             result+=String.format("<input type=\"hidden\" name=\"carOp\" value=%d>", 1);
             result+=String.format("<input type=\"hidden\" name=\"unavailable\" value=%d>",-1);
             result+=String.format("<input type=\"hidden\" name=\"available\" value=%d>", q.getIdcar());
-            result+=String.format("<button %s type=\"submit\"><strong>Set car as <br> available</strong></button></form></td>\n",
+            result+=String.format("<button %s type=\"submit\"><strong>Set car as <br> available</strong></button></form><br>\n",
                     (q.getAvailability()==1)?"disabled":"");
 
-            result+="<td><form method=\"get\" action=\"employeesMainPage\">";
+            result+="<form method=\"get\" action=\"employeesMainPage\">";
             result+=String.format("<input type=\"hidden\" name=\"carOp\" value=%d>", 1);
             result+=String.format("<input type=\"hidden\" name=\"unavailable\" value=%d>", q.getIdcar());
             result+=String.format("<input type=\"hidden\" name=\"available\" value=%d>", -1);
@@ -225,9 +238,9 @@ public class EmployeeController {
             model.addAttribute("employeeTables1",message);
             return;
         }
-        String result="<table class=\"table table-striped table-hover\">";
+        String result="<table class=\"table table-hover\">";
         for(QueryJoinReservation q: list){
-            result+=(q.getValidity()==1)?"<tr class=\"table-success\">":"<tr class=\"table-danger\">";
+            result+=(q.getValidity()==1)?"<tr class=\"bg-success\">":"<tr class=\"bg-danger\">";
             result+=String.format("<td>Reservation's Id: %d <br>",q.getIdreservation());//1
             result+=String.format("Price per day: $ %d <br>",q.getPriceperday());
             result+=String.format("Total amount: $ %f <br>", Float.valueOf(ChronoUnit.DAYS.between(q.getPickupdate(),q.getReturndate())*q.getPriceperday()));

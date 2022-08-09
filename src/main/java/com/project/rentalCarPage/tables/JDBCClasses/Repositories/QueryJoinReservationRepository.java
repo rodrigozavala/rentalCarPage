@@ -39,7 +39,7 @@ public interface QueryJoinReservationRepository extends CrudRepository<QueryJoin
             "ORDER BY r.reservationdate DESC;")
     public ArrayList<QueryJoinReservation> findReservationsByResId(@Param("idRes") Integer id);
 
-    @Query("SELECT c.name, c.lastname, c.email, car.idcar, cm.modelname, \n" +
+    @Query("SELECT c.name, c.lastname, c.email, c.phone, car.idcar, cm.modelname, cm.imagepath, \n" +
             "car.priceperday, cm.kmperl, cm.auttransmission, cm.peoplecapacity, \n" +
             "cm.luggagecapacity, r.idreservation, r.reservationdate, r.pickupdate, \n" +
             "r.returndate, r.validity, car.availability\n" +
@@ -52,5 +52,18 @@ public interface QueryJoinReservationRepository extends CrudRepository<QueryJoin
             "ON car.idmodel=cm.idmodel\n" +
             "ORDER BY r.reservationdate DESC;")
     public ArrayList<QueryJoinReservation>findAll();
+
+    @Query("SELECT c.name, c.lastname, c.email, c.phone, car.idcar, cm.modelname, cm.imagepath, \n" +
+            "car.priceperday, cm.kmperl, cm.auttransmission, cm.peoplecapacity, \n" +
+            "cm.luggagecapacity, r.idreservation, r.reservationdate, r.pickupdate, \n" +
+            "r.returndate, r.validity, car.availability\n" +
+            "FROM car\n" +
+            "LEFT JOIN client AS c\n" +
+            "ON car.idclient=c.idclient\n" +
+            "JOIN carmodel AS cm\n" +
+            "ON car.idmodel=cm.idmodel\n" +
+            "JOIN reservation AS r\n" +
+            "ON r.idreservation=car.idreservation;")
+    public ArrayList<QueryJoinReservation> findAllCars();
 
 }
