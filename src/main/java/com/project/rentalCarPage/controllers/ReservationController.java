@@ -46,7 +46,7 @@ public class ReservationController {
 
                 reservationRepository.insertReservation(Integer.valueOf(carCookie.getValue()),Integer.valueOf(sessionInfo[1]),1,dateInfo.get(2),dateInfo.get(0),dateInfo.get(1));
                 ArrayList<Reservation> list=reservationRepository.checkLast();
-                String message=String.format("<h3>Your reservation has the id: %s </h3> <br>",list.get(0).getIdclient());
+                String message=String.format("<h3>Your reservation has the id: %s </h3> <br>",list.get(0).getIdreservation());
                 message+=String.format("<h3>You must pickUp the car in %s</h3><br>",list.get(0).getPickupdate().toString().replace("T"," "));
                 message+=String.format("<h3>You must return the car in %s</h3><br><br>",list.get(0).getReturndate().toString().replace("T"," "));
                 message+="<h3><strong>Thanks for your reservation!</strong></h3>";

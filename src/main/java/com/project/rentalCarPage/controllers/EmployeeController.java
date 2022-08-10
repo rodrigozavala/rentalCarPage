@@ -93,7 +93,7 @@ public class EmployeeController {
                 if(request.getParameter("selResToExecute")!=null){
                     Integer resExecute=Integer.valueOf(request.getParameter("selResToExecute"));
 
-                    Reservation res=reservationRepository.findById(resExecute).get();
+                    Reservation res=reservationRepository.findById(resExecute).get();//do I check if the car is unavailable?
                     carRepository.setReservationAndClient(res.getIdreservation(),res.getIdclient(),res.getIdcar());
                     carRepository.makeUnavailable(res.getIdcar());
                 }

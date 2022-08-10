@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.rentalCarPage.tables.JDBCClasses.Repositories.ClientRepository;
 import org.springframework.ui.Model;
 
-import javax.crypto.Cipher;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +13,7 @@ import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -100,7 +101,6 @@ public class toolsToCustomizeNav {
         return new Cookie(COOKIE_DATES,valuesToStringCookie(pickUpDate,returnDate));
 
     }
-
 
 
 }
