@@ -37,6 +37,14 @@ public class CarmodelController {
     @Autowired
     private CarRepository carRepository;
 
+    /**
+     * Shows information about the car reserved
+     * @param model
+     * @param response
+     * @param request
+     * @param selection
+     * @return paying.html
+     */
     @PostMapping(value="/paying")
     public String showSelected(Model model,HttpServletResponse response,HttpServletRequest request, @RequestParam(value = "selection",required = false) Integer selection) {
 
@@ -90,8 +98,26 @@ public class CarmodelController {
         }
         return "paying";
     }
+
+    /**
+     * Shows cars selected by some parameters
+     * @param model
+     * @param request
+     * @param response
+     * @param pickUpDate when to pickup the car
+     * @param returnDate when to return the car
+     * @param MaxPrice maxPrice of cars
+     * @param CarType type of car
+     * @param order ASC or DESC
+     * @return CarsBetween.html
+     */
     @GetMapping(value="/CarsBetween")
-    public String selectCars(Model model, HttpServletRequest request, HttpServletResponse response, @RequestParam(name="PickUpDate", required = false) String pickUpDate, @RequestParam(name="ReturnDate",required = false) String returnDate, @RequestParam(name="MaxPricePerDay",required = false) Integer MaxPrice, @RequestParam(name="TypeCar",required = false) String CarType, @RequestParam(name="order",required = false) String order){
+    public String selectCars(Model model, HttpServletRequest request, HttpServletResponse response,
+                             @RequestParam(name="PickUpDate", required = false) String pickUpDate,
+                             @RequestParam(name="ReturnDate",required = false) String returnDate,
+                             @RequestParam(name="MaxPricePerDay",required = false) Integer MaxPrice,
+                             @RequestParam(name="TypeCar",required = false) String CarType,
+                             @RequestParam(name="order",required = false) String order){
         toolsToCustomizeNav.navCustomization(model,request,response);
         if(pickUpDate==null || returnDate==null || CarType==null){
             String message="<h4>Enter the desired date to pick and return the vehicle <br> as well " +
@@ -119,6 +145,15 @@ public class CarmodelController {
         return "CarsBetween";
     }
 
+    /**
+     * Converts a list of elements into a html table. If isTable==true
+     * then it shows info to CarsBetween.html, otherwise, it shows info
+     * to paying.html
+     * @param list
+     * @param isTable
+     * @param request
+     * @return a table in html format
+     */
     private String convertToTable(ArrayList<QueryJoinCarCarmodel> list,Boolean isTable,HttpServletRequest request){
         //Change later to implement CSS
         String result="";
@@ -190,6 +225,11 @@ public class CarmodelController {
         return result;
     }
 
+
+    /**
+     * Show the credit card form
+     * @param model
+     */
     private void showCreditCardForm(Model model){
         String information="<h2>Please introduce your <br> credit car information:</h2>\n" +
                 "                <form class=\"form-group\" method=\"post\" action=\"successfull_operation\">\n" +

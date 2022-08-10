@@ -24,6 +24,13 @@ public class toolsToCustomizeNav {
     public static final String COOKIE_DATES = "RCDATES";
     public static final String COOKIE_USER_NAME = "RCU";
     public static final String COOKIE_EMPLOYEE="AERCID";
+
+    /**
+     * Add nav customization to the model parameter
+     * @param model
+     * @param request
+     * @param response
+     */
     public static void navCustomization(Model model, HttpServletRequest request, HttpServletResponse response){
         String navInformation="<li>\n" +
                 "                    <a href=\"http://localhost:8989/login\" >Login</a>\n" +
@@ -62,10 +69,22 @@ public class toolsToCustomizeNav {
         }
     }
 
+    /**
+     * Add the ID cookie, the null tag avoids the necessity to track the user session in the server
+     * by assigning the null tag to all the non-identified users
+     * @param model
+     * @param response
+     */
     public static void addIdSessionCookie(Model model,HttpServletResponse response){
         Cookie cookie=new Cookie(COOKIE_SESSION,"null");
         response.addCookie(cookie);
     }
+
+    /**
+     * Add the user information to the model parameter to customize the nav element on html
+     * @param model
+     * @param userName
+     */
     public static  void updateNavWithUserData(Model model,Cookie userName){
         String userInfo0=String.format("<li ><div class=\"dropdown\">\n" +
                 "  <button class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
@@ -84,17 +103,34 @@ public class toolsToCustomizeNav {
         model.addAttribute("navInformation",userInfo0);
     }
 
+    /**
+     * Add CarData cookies to store information about the selected car
+     * @param response
+     * @param request
+     */
     public static void addCarDataCookie(HttpServletResponse response,HttpServletRequest request){
         response.addCookie(new Cookie(COOKIE_CARDATA,request.getParameter("selection")));
     }
 
 
+    /**
+     * Convert String dates into a cookie value.
+     * @param pickUpDate
+     * @param returnDate
+     * @return
+     */
     public static String valuesToStringCookie(String pickUpDate,String returnDate){
         LocalDateTime today=LocalDateTime.now();
         String reservationdate=DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(today).replace(" ","T");
         String result=pickUpDate+":00"+"TTT"+returnDate+":00"+"TTT"+reservationdate;
         return result;
     }
+
+    /**
+     * Add cookies corresponding to a timeframe
+     * @param request
+     * @return
+     */
     public static Cookie addDatesCookie(HttpServletRequest request){
         String pickUpDate =request.getParameter("PickUpDate");
         String returnDate =request.getParameter("ReturnDate");

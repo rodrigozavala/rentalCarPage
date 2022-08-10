@@ -5,6 +5,7 @@ import com.project.rentalCarPage.tables.JDBCClasses.Reservation;
 import com.project.rentalCarPage.tables.JDBCClasses.toolsToCustomizeNav;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,16 @@ public class ReservationController {
     @Autowired
     private ReservationRepository reservationRepository;
 
+
+    /**
+     * Shows if a reservation operation was successful, then it shows a message.
+     * Also, here a new reservation is inserted.
+     * @param model
+     * @param request
+     * @param response
+     * @return successfull_operation.html
+     */
+    @Transactional
     @PostMapping(value="/successfull_operation")
     public String showSuccessfullReservation(Model model, HttpServletRequest request, HttpServletResponse response){
         toolsToCustomizeNav.navCustomization(model,request,response);
@@ -63,6 +74,15 @@ public class ReservationController {
         response.addCookie(dateData);
         return "successfull_operation";
     }
+
+    /**
+     * Shows cancelReservation.html and cancel a reservation (changes reservation validity to 0)
+     * @param model
+     * @param request
+     * @param response
+     * @return cancelReservation.html
+     */
+    @Transactional
     @PostMapping(value="/cancelReservation")
     public String cancelReservation(Model model, HttpServletRequest request,HttpServletResponse response){
         toolsToCustomizeNav.navCustomization(model,request,response);

@@ -32,15 +32,21 @@ public class ClientController {
     private ClientRepository clientRepository;
     @Autowired
     private QueryJoinReservationRepository queryJoinReservationRepository;
+
+    /**
+     * Shows clientInfo.html with client info depending on cookies and parameters
+     * @param model
+     * @param response
+     * @param request
+     * @return retrieves clientInfo.html file when requested by a Post Method only.
+     */
     @PostMapping(value="/clientInfo")
     public String getUserProfile(Model model,HttpServletResponse response,HttpServletRequest request){
-        /*String something=request.getHttpServletMapping().toString()+"\n"+
-                request.getRequestURL()+"\n"+request.getContextPath().toString()+request.getPathTranslated()+
-                request.getServletPath()+request.getSession().getServletContext().getContextPath();
-        model.addAttribute("aTest",something);*/
+
         if(request.getCookies()!=null){//(COOKIES) we have cookies
             Cookie myCookie=null;
             Cookie userName=null;
+            //PICKING THE AVAILABLE COOKIES
             try{
                 myCookie=Arrays.stream(request.getCookies()).
                         filter(c->c.getName().equals(toolsToCustomizeNav.COOKIE_SESSION)).
@@ -74,10 +80,10 @@ public class ClientController {
                 String password=request.getParameter("Password");
                 String phone=request.getParameter("Phone");
                 //System.out.println(email+"###"+password);
-                if(email !=null && password!=null){//(COOKIES)(NOT CONNECTED)(LOGIN)if we come from login
+                if(email !=null && password!=null){//(COOKIES)(NOT CONNECTED)(LOGIN)if we come from login or signup
                     //we use authentication to connect or send a message of
                     //failed login, wrong password or email
-                    if(phone==null){
+                    if(phone==null){//The user comes from login
                         userAuthentication(model,request,response,email,password);
                     }else{//The user is signing-up
 
@@ -104,6 +110,14 @@ public class ClientController {
 
         return "clientInfo";
     }
+
+    /**
+     * Shows the main page
+     * @param model
+     * @param response
+     * @param request
+     * @return index.html
+     */
     @GetMapping(value="/index")
     public  String showMainView(Model model,HttpServletResponse response,HttpServletRequest request){
         toolsToCustomizeNav.navCustomization(model,request,response);
@@ -111,15 +125,28 @@ public class ClientController {
         return "index";
     }
 
+    /**
+     * Shows login page for clients.
+     * @param model
+     * @param response
+     * @param request
+     * @return login.html
+     */
     @GetMapping(value="/login")
     public  String showLoginView(Model model,HttpServletResponse response,HttpServletRequest request){
         toolsToCustomizeNav.navCustomization(model,request,response);
-
 
         //model.addAttribute("cosa","Funcionó");
         return "login";
     }
 
+    /**
+     * Shows SignUp page for clients
+     * @param model
+     * @param response
+     * @param request
+     * @return SignUp.html
+     */
     @GetMapping(value="/SignUp")
     public  String showSignUpView(Model model,HttpServletResponse response,HttpServletRequest request){
         toolsToCustomizeNav.navCustomization(model,request,response);
@@ -127,7 +154,23 @@ public class ClientController {
         return "SignUp";
     }
 
+    @GetMapping(value="/changeData")
+    public  String showChangeDataView(Model model,HttpServletResponse response,HttpServletRequest request){
+        toolsToCustomizeNav.navCustomization(model,request,response);
+        String message="<h1>Not available in this version yet :( <br> please go back</h1>";
+        model.addAttribute("cdInfo",message);
 
+        return "changeData";
+    }
+
+
+    /**
+     * Shows logout page to users and erases cookies
+     * @param model
+     * @param response
+     * @param request
+     * @return logout.html
+     */
     @GetMapping(value="/logout")
     public  String showLogoutView(Model model,HttpServletResponse response,HttpServletRequest request){
         toolsToCustomizeNav.navCustomization(model,request,response);
@@ -150,6 +193,12 @@ public class ClientController {
     }
 
 
+    /**
+     * Shows user's info from DB
+     * @param model
+     * @param list
+     * @param request
+     */
     private void showUserInfo(Model model,ArrayList<Client> list,HttpServletRequest request){
         String message="<h1>User Info</h1>";
         message+=String.format("<h3>Name: %s</h3> <br>",list.get(0).getName());
@@ -177,11 +226,24 @@ public class ClientController {
 
     }
 
+    /**
+     * In case user hasn't login into the web application. This shows a message to login.
+     * @param model
+     */
     private  void noUser(Model model){
         String message="<h1>There is no user, please login</h1>";
         model.addAttribute("userInfo",message);
     }
 
+    /**
+     * Search for the user in DB, shows information and add cookies. If the user info is erroneous,
+     * then it shows a friendly message stating the info is wrong.
+     * @param model
+     * @param request
+     * @param response
+     * @param email
+     * @param password
+     */
     private void userAuthentication(Model model,HttpServletRequest request,HttpServletResponse response,String email, String password){
         ArrayList<Client>list=clientRepository.findByEmailAndPassword(email,password);
 
@@ -202,6 +264,13 @@ public class ClientController {
             toolsToCustomizeNav.updateNavWithUserData(model,userName);
         }
     }
+
+    /**
+     * Inserts a new user in DB if it does not already have an account. Show's a message otherwise.
+     * @param model
+     * @param request
+     * @param response
+     */
     private void signingUp(Model model,HttpServletRequest request,HttpServletResponse response){
         String email=request.getParameter("Email");
         ArrayList<Client> list=clientRepository.findByEmail("%"+email+"%");
@@ -222,6 +291,12 @@ public class ClientController {
             model.addAttribute("aTest",message);
         }
     }
+
+    /**
+     * Shows reservations made by some user. Finds its reservations by the user's ID.
+     * @param model
+     * @param id
+     */
     private void showReservations(Model model,Integer id){
         String message="";
         ArrayList<QueryJoinReservation> list= queryJoinReservationRepository.findReservationsById(id);

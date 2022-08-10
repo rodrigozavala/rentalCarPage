@@ -22,7 +22,7 @@ public interface QueryJoinReservationRepository extends CrudRepository<QueryJoin
             "ON car.idmodel=cm.idmodel\n" +
             "WHERE c.idclient= :idClient\n" +
             "ORDER BY r.reservationdate DESC;")
-    public ArrayList<QueryJoinReservation> findReservationsById(@Param("idClient") Integer id);
+    public ArrayList<QueryJoinReservation> findReservationsById(@Param("idClient") Integer idClient);
 
     @Query("SELECT c.name, c.lastname, c.email, c.phone, car.idcar, cm.modelname, cm.imagepath, \n" +
             "car.priceperday, cm.kmperl, cm.auttransmission, cm.peoplecapacity, \n" +
