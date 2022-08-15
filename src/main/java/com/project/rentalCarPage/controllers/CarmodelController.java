@@ -1,17 +1,14 @@
 package com.project.rentalCarPage.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.project.rentalCarPage.tables.JDBCClasses.*;
 import com.project.rentalCarPage.tables.JDBCClasses.Repositories.CarRepository;
 import com.project.rentalCarPage.tables.JDBCClasses.Repositories.CarmodelRepository;
-import com.project.rentalCarPage.tables.JDBCClasses.Repositories.ClientRepository;
+
 import com.project.rentalCarPage.tables.JDBCClasses.Repositories.QueryJoinCarCarmodelRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.QueryAnnotation;
-import org.springframework.data.jdbc.repository.query.Query;
-import org.springframework.jdbc.core.JdbcTemplate;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
