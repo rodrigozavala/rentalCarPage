@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class QueryJoinCarCarmodel {
+public class QueryJoinCarCarModel {
     private Integer idcar;
     private String modelname;
     private Float kmperl;

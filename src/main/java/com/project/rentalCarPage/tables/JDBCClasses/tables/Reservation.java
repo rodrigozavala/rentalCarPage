@@ -1,24 +1,24 @@
-package com.project.rentalCarPage.tables.JDBCClasses;
+package com.project.rentalCarPage.tables.JDBCClasses.tables;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.LocalDateTime;
 
 @Setter
 @Getter
 //@Entity // This tells Hibernate to make a table out of this class
 @Table
-public class Client {
+public class Reservation {
     @Id
     //@GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer idreservation;
+    private Integer idcar;
     private Integer idclient;
-    private String Name;
-    private String Lastname;
-    private String Email;
-    private String Password;
-    private String Phone;
-    private Integer Age;
-
+    private Integer validity;
+    private LocalDateTime reservationdate;
+    private LocalDateTime Pickupdate;
+    private LocalDateTime Returndate;
 
 }

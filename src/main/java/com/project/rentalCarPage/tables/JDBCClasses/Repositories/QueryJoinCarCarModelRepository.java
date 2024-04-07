@@ -1,16 +1,15 @@
 package com.project.rentalCarPage.tables.JDBCClasses.Repositories;
 
-import com.project.rentalCarPage.tables.JDBCClasses.QueryJoinCarCarmodel;
+import com.project.rentalCarPage.tables.JDBCClasses.QueryJoinCarCarModel;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 //@Transactional(r)
 @Repository
-public interface QueryJoinCarCarmodelRepository extends CrudRepository<QueryJoinCarCarmodel,Integer> {
+public interface QueryJoinCarCarModelRepository extends CrudRepository<QueryJoinCarCarModel,Integer> {
 
     @Query("SELECT DISTINCT r.idcar, carmodel.modelname, carmodel.kmperl,\n" +
             "carmodel.auttransmission, carmodel.peoplecapacity,\n" +
@@ -34,7 +33,7 @@ public interface QueryJoinCarCarmodelRepository extends CrudRepository<QueryJoin
             "AND carmodel.cartype LIKE :carType\n" +
             "AND car.priceperday < :maxPrice\n" +
             "ORDER BY car.priceperday ASC;")
-    public ArrayList<QueryJoinCarCarmodel> findByTimeFrameTypeAndPriceAsc(@Param("endTime") String endTime,
+    public ArrayList<QueryJoinCarCarModel> findByTimeFrameTypeAndPriceAsc(@Param("endTime") String endTime,
                                                                           @Param("startTime") String startTime,
                                                                           @Param("carType") String carType,
                                                                           @Param("maxPrice") Integer maxPrice);
@@ -61,7 +60,7 @@ public interface QueryJoinCarCarmodelRepository extends CrudRepository<QueryJoin
             "AND carmodel.cartype LIKE :carType\n" +
             "AND car.priceperday < :maxPrice\n" +
             "ORDER BY car.priceperday DESC;")
-    public ArrayList<QueryJoinCarCarmodel> findByTimeFrameTypeAndPriceDesc(@Param("endTime") String endTime,
+    public ArrayList<QueryJoinCarCarModel> findByTimeFrameTypeAndPriceDesc(@Param("endTime") String endTime,
                                                                            @Param("startTime") String startTime,
                                                                            @Param("carType") String carType,
                                                                            @Param("maxPrice") Integer maxPrice);
@@ -77,7 +76,7 @@ public interface QueryJoinCarCarmodelRepository extends CrudRepository<QueryJoin
             "INNER JOIN Reservation\n" +
             "ON reservation.idreservation=car.idreservation\n" +
             "WHERE (car.idcar = :myIdCar );")
-    public ArrayList<QueryJoinCarCarmodel> findByIdCar(@Param("myIdCar") Integer idCar);
+    public ArrayList<QueryJoinCarCarModel> findByIdCar(@Param("myIdCar") Integer idCar);
 
     @Query("SELECT DISTINCT car.idcar, carmodel.modelname, carmodel.kmperl,\n" +
             "carmodel.auttransmission, carmodel.peoplecapacity,\n" +
@@ -86,6 +85,6 @@ public interface QueryJoinCarCarmodelRepository extends CrudRepository<QueryJoin
             "FROM  car\n" +
             "INNER JOIN carmodel\n" +
             "ON carmodel.idmodel=car.idmodel;")
-    public ArrayList<QueryJoinCarCarmodel> findAll();
+    public ArrayList<QueryJoinCarCarModel> findAll();
 
 }

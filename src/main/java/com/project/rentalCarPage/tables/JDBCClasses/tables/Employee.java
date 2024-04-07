@@ -1,4 +1,4 @@
-package com.project.rentalCarPage.tables.JDBCClasses;
+package com.project.rentalCarPage.tables.JDBCClasses.tables;
 
 import lombok.Getter;
 import lombok.Setter;

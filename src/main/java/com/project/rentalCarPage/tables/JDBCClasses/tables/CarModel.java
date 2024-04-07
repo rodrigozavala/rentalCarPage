@@ -1,22 +1,23 @@
-package com.project.rentalCarPage.tables.JDBCClasses;
+package com.project.rentalCarPage.tables.JDBCClasses.tables;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-//import javax.persistence.*;
+
 @Getter
 @Setter
 //@Entity // This tells Hibernate to make a table out of this class
 @Table
-public class Car {
+public class CarModel {
     @Id
     //@GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer idcar;
     private Integer idmodel;
-    private Integer idclient;
-    private Integer Availability;
-    private Integer Idreservation;
-    private Integer Priceperday;
-
+    private String Modelname;
+    private Float Kmperl;
+    private Integer Auttransmission;
+    private Integer Peoplecapacity;
+    private Integer Luggagecapacity;
+    private String Cartype;
+    private String Imagepath;
 }
